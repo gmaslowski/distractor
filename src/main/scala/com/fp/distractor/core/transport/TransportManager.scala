@@ -1,7 +1,7 @@
-package com.fp.distractor.core
+package com.fp.distractor.core.transport
 
 import akka.actor.{Actor, ActorLogging, Props}
-import com.fp.distractor.core.TransportManager.SendMsg
+import com.fp.distractor.core.transport.TransportManager.SendMsg
 import com.fp.distractor.registry.ActorRegistry
 
 object TransportManager {

@@ -1,4 +1,4 @@
-package com.fp.distractor.core
+package com.fp.distractor.core.reactor
 
 import akka.actor.{Actor, ActorLogging, Props}
 import com.fp.distractor.registry.ActorRegistry

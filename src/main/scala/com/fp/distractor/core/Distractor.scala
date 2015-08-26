@@ -1,6 +1,8 @@
 package com.fp.distractor.core
 
 import akka.actor.{Actor, ActorLogging, ActorRef, Props}
+import com.fp.distractor.core.reactor.ReactorManager
+import com.fp.distractor.core.transport.TransportManager
 
 object Distractor {
   def props = Props[Distractor]
