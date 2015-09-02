@@ -1,5 +1,6 @@
 package com.fp.distractor.registry
 
+import akka.actor.Actor.Receive
 import akka.actor.{Actor, Props}
 import akka.testkit.{TestActorRef, TestProbe}
 import com.fp.common.AkkaActorTest
@@ -39,4 +40,6 @@ class ActorRegistryTest extends AkkaActorTest {
 
 }
 
-class WithActorRegistry extends Actor with ActorRegistry
+class WithActorRegistry extends Actor with ActorRegistry {
+  override def receive = handleRegistry
+}

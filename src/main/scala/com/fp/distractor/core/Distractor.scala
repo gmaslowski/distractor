@@ -1,8 +1,11 @@
 package com.fp.distractor.core
 
 import akka.actor.{Actor, ActorLogging, ActorRef, Props}
-import com.fp.distractor.core.reactor.ReactorManager
-import com.fp.distractor.core.transport.TransportManager
+import com.fp.distractor.core.reactor.ReactorRegistry
+import com.fp.distractor.core.reactor.info.InfoReactor
+import com.fp.distractor.core.reactor.info.InfoReactor.Information
+import com.fp.distractor.core.transport.TransportRegistry
+import com.fp.distractor.registry.ActorRegistry.RegisterMsg
 
 object Distractor {
   def props = Props[Distractor]
@@ -10,16 +13,31 @@ object Distractor {
 
 class Distractor extends Actor with ActorLogging {
 
-  var transportManager: ActorRef = context.system.deadLetters
-  var reactorManager: ActorRef = context.system.deadLetters
+  var transportRegistry: ActorRef = context.system.deadLetters
+  var reactorRegistry: ActorRef = context.system.deadLetters
 
   def receive = {
-    // fixme: that shouldn't look like this
     case AnyRef =>
   }
 
   override def preStart() = {
-    transportManager = context.actorOf(TransportManager.props)
-    reactorManager = context.actorOf(ReactorManager.props)
+    transportRegistry = context.actorOf(TransportRegistry.props, "transport-registry")
+    reactorRegistry = context.actorOf(ReactorRegistry.props, "reactor-registry")
+
+    context.actorOf(ReactorTransportMixer.props(reactorRegistry, transportRegistry), "reactor-transport-mixer")
+
+    createAndRegisterInfoReactor
+  }
+
+  def createAndRegisterInfoReactor: Unit = {
+
+    val information: Information = new Information(
+      context.system.settings.config.getString("reactor.info.appName"),
+      context.system.settings.config.getString("reactor.info.version"),
+      context.system.settings.config.getString("reactor.info.author")
+    )
+
+    // fixme: the reactor registry was not in place yet ;(
+    reactorRegistry ! RegisterMsg("info", context.actorOf(InfoReactor.props(information)))
   }
 }

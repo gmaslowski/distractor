@@ -14,7 +14,7 @@ trait ActorRegistry extends Actor {
 
   val registry = collection.mutable.HashMap[String, ActorRef]()
 
-  def receive: Receive = {
+  def handleRegistry: Receive = {
     case RegisterMsg(id, toRegister) =>
       registry += id -> toRegister
     case UnregisterMsg(id) =>
