@@ -11,7 +11,6 @@ object InfoReactor {
   def props(information: Information) = Props(classOf[InfoReactor], information)
 
   case class Information(appName: String, version: String, author: String)
-
 }
 
 class InfoReactor(val information: Information) extends Actor with ActorLogging {

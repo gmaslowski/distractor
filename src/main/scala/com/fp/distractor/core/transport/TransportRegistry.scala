@@ -14,7 +14,9 @@ object TransportRegistry {
 
 class TransportRegistry extends Actor with ActorLogging with ActorRegistry {
 
-  override def receive = {
+  override def receive = handleRegistry orElse(handle)
+
+  def handle: Receive = {
     case SendBroadcast(broadcast) =>
       registry.foreach(transportEntry => transportEntry._2 ! new Say(broadcast))
   }

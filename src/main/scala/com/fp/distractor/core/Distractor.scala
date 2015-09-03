@@ -4,6 +4,7 @@ import akka.actor.{Actor, ActorLogging, ActorRef, Props}
 import com.fp.distractor.core.reactor.ReactorRegistry
 import com.fp.distractor.core.reactor.info.InfoReactor
 import com.fp.distractor.core.reactor.info.InfoReactor.Information
+import com.fp.distractor.core.reactor.system.SystemReactor
 import com.fp.distractor.core.transport.TransportRegistry
 import com.fp.distractor.registry.ActorRegistry.RegisterMsg
 
@@ -24,9 +25,10 @@ class Distractor extends Actor with ActorLogging {
     transportRegistry = context.actorOf(TransportRegistry.props, "transport-registry")
     reactorRegistry = context.actorOf(ReactorRegistry.props, "reactor-registry")
 
-    context.actorOf(ReactorTransportMixer.props(reactorRegistry, transportRegistry), "reactor-transport-mixer")
+    val mixer: ActorRef = context.actorOf(ReactorTransportMixer.props(reactorRegistry, transportRegistry), "reactor-transport-mixer")
 
     createAndRegisterInfoReactor
+    reactorRegistry ! RegisterMsg("system", context.actorOf(SystemReactor.props(mixer)))
   }
 
   def createAndRegisterInfoReactor: Unit = {
