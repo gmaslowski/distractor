@@ -2,7 +2,8 @@ package com.fp.distractor.core.reactor.system
 
 import akka.actor.{Actor, ActorLogging, ActorRef, Props}
 import com.fp.distractor.core.reactor.api.ReactorApi.ReactorRequest
-import com.fp.distractor.core.transport.api.TransportApi.{Message, Say}
+import com.fp.distractor.core.transport.api.Message
+import com.fp.distractor.core.transport.api.TransportApi.Say
 
 import scala.sys.process._
 
@@ -17,6 +18,6 @@ class SystemReactor(val mixer: ActorRef) extends Actor with ActorLogging {
       val shellCommand = reactorRequest.data
       val shellCommandResponse = shellCommand !!
 
-      mixer forward new Say(new Message(shellCommandResponse))
+      mixer forward new Say(new Message("id", shellCommandResponse))
   }
 }
