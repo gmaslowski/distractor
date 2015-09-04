@@ -12,6 +12,7 @@ object ReactorTransportMixer {
   def props(reactorRegistry: ActorRef, transportRegistry: ActorRef) = Props(classOf[ReactorTransportMixer], reactorRegistry, transportRegistry)
 
   case class React(msg: String)
+
 }
 
 class ReactorTransportMixer(val reactorRegistry: ActorRef, val transportRegistry: ActorRef) extends Actor with ActorLogging {
@@ -33,6 +34,6 @@ class ReactorTransportMixer(val reactorRegistry: ActorRef, val transportRegistry
       reactorRegistry forward new ReactorRequest(reactorId, data)
 
     case say: Say =>
-      sender() ! new ReactorResponse("sth", say.message.msg)
+      sender() ! new ReactorResponse("sth", say.message.command)
   }
 }

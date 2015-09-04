@@ -58,6 +58,6 @@ class TelnetTransportActor extends Actor with ActorLogging {
     case Say(message) =>
       val sessions = acceptor.getManagedSessions
 
-      // todo: write response
+    // todo: write response
   }
 }
