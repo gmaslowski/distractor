@@ -1,11 +1,9 @@
 package com.fp.distractor.core
 
 import akka.actor.{Actor, ActorLogging, ActorRef, Props}
-import com.fp.distractor.core.ReactorTransportMixer.React
+import com.fp.distractor.core.ReactorTransportMixer.{React, extractReactorAndCommandFrom}
 import com.fp.distractor.core.reactor.api.ReactorApi.{ReactorRequest, ReactorResponse}
 import com.fp.distractor.core.transport.api.TransportApi.Say
-
-import scala.util.matching.Regex.MatchIterator
 
 object ReactorTransportMixer {
 
@@ -13,23 +11,20 @@ object ReactorTransportMixer {
 
   case class React(msg: String)
 
+  private val COMMAND_PATTERN = """\/([a-zA-Z]+)\s(.*)"""
+
+  def extractReactorAndCommandFrom(message: String): (String, String) = {
+    val Pattern = COMMAND_PATTERN.r
+    val Pattern(reactorId, command) = message
+
+    (reactorId, command)
+  }
 }
 
 class ReactorTransportMixer(val reactorRegistry: ActorRef, val transportRegistry: ActorRef) extends Actor with ActorLogging {
-
   override def receive = {
     case react: React =>
-      val pattern = "(/{1})([a-zA-Z]+)(\\s{1})(.*)".r
-      val matcher: MatchIterator = pattern.findAllIn(react.msg)
-
-      log.info(matcher.toString())
-      log.info(matcher.group(0))
-      log.info(matcher.group(1))
-      log.info(matcher.group(2))
-      log.info(matcher.group(3))
-
-      val reactorId = matcher.group(2)
-      val data = matcher.group(4)
+      val (reactorId: String, data: String) = extractReactorAndCommandFrom(react.msg)
 
       reactorRegistry forward new ReactorRequest(reactorId, data)
 
