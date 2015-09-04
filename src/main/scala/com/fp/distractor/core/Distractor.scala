@@ -28,7 +28,7 @@ class Distractor extends Actor with ActorLogging {
     val mixer: ActorRef = context.actorOf(ReactorTransportMixer.props(reactorRegistry, transportRegistry), "reactor-transport-mixer")
 
     createAndRegisterInfoReactor
-    reactorRegistry ! RegisterMsg("system", context.actorOf(SystemReactor.props(mixer)))
+    reactorRegistry ! RegisterMsg("system", context.actorOf(SystemReactor.props))
   }
 
   def createAndRegisterInfoReactor: Unit = {
