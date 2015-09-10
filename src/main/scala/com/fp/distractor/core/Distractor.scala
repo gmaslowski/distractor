@@ -16,6 +16,7 @@ class Distractor extends Actor with ActorLogging {
 
   var transportRegistry: ActorRef = context.system.deadLetters
   var reactorRegistry: ActorRef = context.system.deadLetters
+  var mixer: ActorRef = context.system.deadLetters
 
   def receive = {
     case AnyRef =>
@@ -24,8 +25,7 @@ class Distractor extends Actor with ActorLogging {
   override def preStart() = {
     transportRegistry = context.actorOf(TransportRegistry.props, "transport-registry")
     reactorRegistry = context.actorOf(ReactorRegistry.props, "reactor-registry")
-
-    val mixer: ActorRef = context.actorOf(ReactorTransportMixer.props(reactorRegistry, transportRegistry), "reactor-transport-mixer")
+    mixer = context.actorOf(ReactorTransportMixer.props(reactorRegistry), "reactor-transport-mixer")
 
     createAndRegisterInfoReactor
     reactorRegistry ! RegisterMsg("system", context.actorOf(SystemReactor.props))
@@ -40,6 +40,6 @@ class Distractor extends Actor with ActorLogging {
     )
 
     // fixme: the reactor registry was not in place yet ;(
-    reactorRegistry ! RegisterMsg("info", context.actorOf(InfoReactor.props(information)))
+    reactorRegistry ! RegisterMsg("info", context.actorOf(InfoReactor.props(information, transportRegistry, reactorRegistry)))
   }
 }

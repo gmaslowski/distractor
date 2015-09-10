@@ -19,4 +19,4 @@ object Message {
  * @param reactorId
  * @param command
  */
-class Message(val reactorId: String, val command: String)
+case class Message(reactorId: String, command: String)
