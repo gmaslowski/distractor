@@ -4,10 +4,11 @@ import akka.actor.{Actor, ActorLogging, ActorRef, Props}
 import com.fp.distractor.core.ReactorTransportMixer.{React, extractReactorAndCommandFrom}
 import com.fp.distractor.core.reactor.api.ReactorApi.{ReactorRequest, ReactorResponse}
 import com.fp.distractor.core.transport.api.TransportApi.Say
+import com.fp.distractor.registry.ActorRegistry.{RegisterMsg, RegisteredMsg}
 
 object ReactorTransportMixer {
 
-  def props(reactorRegistry: ActorRef, transportRegistry: ActorRef) = Props(classOf[ReactorTransportMixer], reactorRegistry, transportRegistry)
+  def props(reactorRegistry: ActorRef) = Props(classOf[ReactorTransportMixer], reactorRegistry)
 
   case class React(msg: String)
 
@@ -21,11 +22,11 @@ object ReactorTransportMixer {
   }
 }
 
-class ReactorTransportMixer(val reactorRegistry: ActorRef, val transportRegistry: ActorRef) extends Actor with ActorLogging {
+class ReactorTransportMixer(val reactorRegistry: ActorRef) extends Actor with ActorLogging {
   override def receive = {
+
     case react: React =>
       val (reactorId: String, data: String) = extractReactorAndCommandFrom(react.msg)
-
       reactorRegistry forward new ReactorRequest(reactorId, data)
 
     case say: Say =>

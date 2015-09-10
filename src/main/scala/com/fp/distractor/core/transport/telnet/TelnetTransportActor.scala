@@ -5,8 +5,9 @@ import java.net.InetSocketAddress
 import java.nio.charset.Charset
 import java.util.concurrent.TimeUnit.SECONDS
 
-import akka.actor.{Actor, ActorLogging, Props}
+import akka.actor.{ActorSelection, Actor, ActorLogging, Props}
 import com.fp.distractor.core.transport.api.TransportApi.Say
+import com.fp.distractor.registry.ActorRegistry.RegisterMsg
 import org.apache.mina.core.session.IdleStatus.BOTH_IDLE
 import org.apache.mina.core.session.IoSession
 import org.apache.mina.filter.codec.ProtocolCodecFilter
@@ -42,6 +43,8 @@ class TelnetTransportActor extends Actor with ActorLogging {
 
     configureSession(acceptor.getSessionConfig)
 
+    // fixme: think on API and how to communicate reactors with the kernel
+    context.actorSelection("akka://distractor/user/distractor/transport-registry") ! RegisterMsg("telnet", self)
     acceptor.setHandler(new TelnetHandler(log, context.actorSelection("akka://distractor/user/distractor/reactor-transport-mixer"), self))
 
     // fixme: use future for that; or a spawned actor
@@ -67,6 +70,5 @@ class TelnetTransportActor extends Actor with ActorLogging {
 
       // todo: write response
       sessions.foreach(entry => entry._2.write(message.command))
-
   }
 }

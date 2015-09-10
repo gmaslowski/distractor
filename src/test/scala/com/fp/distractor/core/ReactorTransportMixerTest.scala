@@ -12,8 +12,7 @@ class ReactorTransportMixerTest extends AkkaActorTest {
 
     // given
     val reactorRegistry = TestProbe()
-    val transportRegistry = TestProbe()
-    val actor = TestActorRef(Props(classOf[ReactorTransportMixer], reactorRegistry.ref, transportRegistry.ref))
+    val actor = TestActorRef(Props(classOf[ReactorTransportMixer], reactorRegistry.ref))
     val sender = TestProbe()
 
     "forward the request to Reactor" in {

@@ -16,6 +16,7 @@ class SystemReactor extends Actor with ActorLogging {
   override def receive = {
     case reactorRequest: ReactorRequest =>
       val shellCommand = reactorRequest.data
+
       // fixme: better to do it in a future/actor
       val shellCommandResponse = shellCommand !!
 
