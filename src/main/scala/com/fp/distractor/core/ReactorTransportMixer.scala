@@ -11,7 +11,7 @@ object ReactorTransportMixer {
 
   case class React(msg: String)
 
-  private val COMMAND_PATTERN = """\/([a-zA-Z]+)\s(.*)"""
+  private val COMMAND_PATTERN = """\/([a-zA-Z]+)\s*(.*)"""
 
   def extractReactorAndCommandFrom(message: String): (String, String) = {
     val Pattern = COMMAND_PATTERN.r

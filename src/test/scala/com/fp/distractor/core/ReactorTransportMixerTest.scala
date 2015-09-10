@@ -4,7 +4,7 @@ import akka.actor.Props
 import akka.testkit.{TestActorRef, TestProbe}
 import com.fp.common.AkkaActorTest
 import com.fp.distractor.core.ReactorTransportMixer.React
-import com.fp.distractor.core.reactor.api.ReactorApi.{ReactorRequest, ReactorResponse}
+import com.fp.distractor.core.reactor.api.ReactorApi.ReactorRequest
 
 class ReactorTransportMixerTest extends AkkaActorTest {
 
@@ -28,17 +28,43 @@ class ReactorTransportMixerTest extends AkkaActorTest {
 
   "parsing function" should {
 
-    // given
-    val msg = "/system ls -CFal"
-
     "parse and provide reactorId and command" in {
 
+      // given
+      val msg = "/system ls -CFal"
+
       // when
-      val tuple: (String, String) = ReactorTransportMixer.extractReactorAndCommandFrom(msg)
+      val respone: (String, String) = ReactorTransportMixer.extractReactorAndCommandFrom(msg)
 
       // then
-      assert(tuple._1 equals "system")
-      assert(tuple._2 equals "ls -CFal")
+      assert(respone._1 equals "system")
+      assert(respone._2 equals "ls -CFal")
+    }
+
+    "work for no-argument commands -> /info" in {
+
+      // given
+      val msg = "/info"
+
+      // when
+      val response: (String, String) = ReactorTransportMixer.extractReactorAndCommandFrom(msg)
+
+      // then
+      assert(response._1 equals "info")
+      assert(response._2 equals "")
+    }
+
+    "not care on whitespaces between command and arguments" in {
+
+      // given
+      val msg = "/system   ls -CFal"
+
+      // when
+      val respone: (String, String) = ReactorTransportMixer.extractReactorAndCommandFrom(msg)
+
+      // then
+      assert(respone._1 equals "system")
+      assert(respone._2 equals "ls -CFal")
     }
   }
 }
