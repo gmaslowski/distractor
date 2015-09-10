@@ -1,12 +1,30 @@
 package com.fp.distractor.core
 
-import akka.actor.{Actor, ActorLogging, ActorRef, Props}
+import akka.actor._
+import akka.kernel.Bootable
 import com.fp.distractor.core.reactor.ReactorRegistry
 import com.fp.distractor.core.reactor.info.InfoReactor
 import com.fp.distractor.core.reactor.info.InfoReactor.Information
 import com.fp.distractor.core.reactor.system.SystemReactor
 import com.fp.distractor.core.transport.TransportRegistry
+import com.fp.distractor.core.transport.telnet.TelnetTransportActor
 import com.fp.distractor.registry.ActorRegistry.RegisterMsg
+
+class DistractorKernel extends Bootable {
+
+  val system = ActorSystem("distractor")
+
+  def startup = {
+    system.actorOf(Distractor.props, "distractor")
+
+    // fixme: transport should be distractor-kernel independent
+    system.actorOf(TelnetTransportActor.props, "telnet")
+  }
+
+  def shutdown = {
+    system.shutdown()
+  }
+}
 
 object Distractor {
   def props = Props[Distractor]

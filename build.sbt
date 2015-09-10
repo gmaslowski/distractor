@@ -14,6 +14,7 @@ val logbackVersion= "1.1.3"
 libraryDependencies ++= Seq(
   // Actor System
   "com.typesafe.akka" %% "akka-actor" % akkaVersion,
+  "com.typesafe.akka" %% "akka-kernel" % akkaVersion,
   // Goodies
   "org.apache.mina" % "mina-core" % minaVersion,
   "ch.qos.logback" % "logback-classic" % logbackVersion,
