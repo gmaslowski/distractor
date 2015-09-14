@@ -3,22 +3,23 @@ package com.fp.distractor.core
 import akka.actor.Props
 import akka.testkit.{TestActorRef, TestProbe}
 import com.fp.common.AkkaActorTest
-import com.fp.distractor.core.ReactorTransportMixer.React
+import com.fp.distractor.core.api.DistractorApi.DistractorRequest
+import com.fp.distractor.core.api.DistractorRequestHandler
 import com.fp.distractor.core.reactor.api.ReactorApi.ReactorRequest
 
-class ReactorTransportMixerTest extends AkkaActorTest {
+class DistractorRequestHandlerTest extends AkkaActorTest {
 
   "ReactorMixer" should {
 
     // given
     val reactorRegistry = TestProbe()
-    val actor = TestActorRef(Props(classOf[ReactorTransportMixer], reactorRegistry.ref))
+    val actor = TestActorRef(Props(classOf[DistractorRequestHandler], reactorRegistry.ref))
     val sender = TestProbe()
 
     "forward the request to Reactor" in {
 
       // when
-      actor.tell(new React("/system ls -CFal"), sender.ref)
+      actor.tell(DistractorRequest("/system ls -CFal"), sender.ref)
 
       // then
       reactorRegistry.expectMsgClass(classOf[ReactorRequest])
@@ -33,7 +34,7 @@ class ReactorTransportMixerTest extends AkkaActorTest {
       val msg = "/system ls -CFal"
 
       // when
-      val respone: (String, String) = ReactorTransportMixer.extractReactorAndCommandFrom(msg)
+      val respone: (String, String) = DistractorRequestHandler.extractReactorAndCommandFrom(msg)
 
       // then
       assert(respone._1 equals "system")
@@ -46,7 +47,7 @@ class ReactorTransportMixerTest extends AkkaActorTest {
       val msg = "/info"
 
       // when
-      val response: (String, String) = ReactorTransportMixer.extractReactorAndCommandFrom(msg)
+      val response: (String, String) = DistractorRequestHandler.extractReactorAndCommandFrom(msg)
 
       // then
       assert(response._1 equals "info")
@@ -59,7 +60,7 @@ class ReactorTransportMixerTest extends AkkaActorTest {
       val msg = "/system   ls -CFal"
 
       // when
-      val respone: (String, String) = ReactorTransportMixer.extractReactorAndCommandFrom(msg)
+      val respone: (String, String) = DistractorRequestHandler.extractReactorAndCommandFrom(msg)
 
       // then
       assert(respone._1 equals "system")
