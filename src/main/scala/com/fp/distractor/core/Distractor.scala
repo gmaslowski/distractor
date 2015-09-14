@@ -8,8 +8,8 @@ import com.fp.distractor.core.reactor.info.InfoReactor
 import com.fp.distractor.core.reactor.info.InfoReactor.Information
 import com.fp.distractor.core.reactor.system.SystemReactor
 import com.fp.distractor.core.transport.TransportRegistry
-import com.fp.distractor.core.transport.telnet.TelnetTransportActor
 import com.fp.distractor.registry.ActorRegistry.RegisterMsg
+import com.fp.distractor.transport.telnet.TelnetTransport
 
 class DistractorKernel extends Bootable {
 
@@ -19,7 +19,7 @@ class DistractorKernel extends Bootable {
     system.actorOf(Distractor.props, "distractor")
 
     // fixme: transport should be distractor-kernel independent
-    system.actorOf(TelnetTransportActor.props, "telnet")
+    system.actorOf(TelnetTransport.props, "telnet")
   }
 
   def shutdown = {

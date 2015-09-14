@@ -1,4 +1,4 @@
-package com.fp.distractor.reactor
+package com.fp.distractor.transport.telnet
 
 import com.fp.common.AkkaActorTest
 
