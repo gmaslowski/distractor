@@ -38,7 +38,7 @@ class Distractor extends Actor with ActorLogging {
   var requestHandler: ActorRef = context.system.deadLetters
 
   def receive = {
-    case AnyRef =>
+    case msg: AnyRef => unhandled(msg)
   }
 
   override def preStart() = {
