@@ -14,7 +14,7 @@ class ReactorRegistry extends Actor with ActorLogging with ActorRegistry {
 
   def handle: Receive = {
     case reactorRequest: ReactorRequest =>
-      registry.get(reactorRequest.reactorId).getOrElse(context.system.deadLetters) forward(reactorRequest)
+      registry.get(reactorRequest.reactorId) getOrElse context.system.deadLetters forward reactorRequest
   }
 
 }

@@ -45,7 +45,7 @@ class TelnetTransportActor extends Actor with ActorLogging {
 
     // fixme: think on API and how to communicate reactors with the kernel
     context.actorSelection("akka://distractor/user/distractor/transport-registry") ! RegisterMsg("telnet", self)
-    acceptor.setHandler(new TelnetHandler(log, context.actorSelection("akka://distractor/user/distractor/reactor-transport-mixer"), self))
+    acceptor.setHandler(new TelnetHandler(log, context.actorSelection("akka://distractor/user/distractor/request-handler"), self))
 
     // fixme: use future for that; or a spawned actor
     acceptor.bind(new InetSocketAddress(TELNET_PORT))
