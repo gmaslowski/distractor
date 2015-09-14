@@ -1,13 +1,14 @@
-package com.fp.distractor.core.transport.telnet
+package com.fp.distractor.transport.telnet
 
 import java.lang.Long
 import java.net.InetSocketAddress
 import java.nio.charset.Charset
 import java.util.concurrent.TimeUnit.SECONDS
 
-import akka.actor.{ActorSelection, Actor, ActorLogging, Props}
+import akka.actor.{Actor, ActorLogging, Props}
 import com.fp.distractor.core.transport.api.TransportApi.Say
 import com.fp.distractor.registry.ActorRegistry.RegisterMsg
+import com.fp.distractor.transport.telnet.TelnetTransport.TELNET_PORT
 import org.apache.mina.core.session.IdleStatus.BOTH_IDLE
 import org.apache.mina.core.session.IoSession
 import org.apache.mina.filter.codec.ProtocolCodecFilter
@@ -19,16 +20,14 @@ import org.apache.mina.transport.socket.nio.NioSocketAcceptor
 import scala.collection.mutable
 import scala.concurrent.duration.FiniteDuration
 
-object TelnetTransportActor {
+object TelnetTransport {
   val TELNET_PORT: Int = 8111
   val ONE_SECOND: FiniteDuration = FiniteDuration.apply(1, SECONDS)
 
-  def props = Props[TelnetTransportActor]
+  def props = Props[TelnetTransport]
 }
 
-class TelnetTransportActor extends Actor with ActorLogging {
-
-  import com.fp.distractor.core.transport.telnet.TelnetTransportActor._
+class TelnetTransport extends Actor with ActorLogging {
 
   import scala.collection.JavaConverters._
 

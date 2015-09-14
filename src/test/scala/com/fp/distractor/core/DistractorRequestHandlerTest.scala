@@ -9,7 +9,7 @@ import com.fp.distractor.core.reactor.api.ReactorApi.ReactorRequest
 
 class DistractorRequestHandlerTest extends AkkaActorTest {
 
-  "ReactorMixer" should {
+  "DistractorRequestHandler" should {
 
     // given
     val reactorRegistry = TestProbe()

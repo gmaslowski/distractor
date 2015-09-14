@@ -22,6 +22,12 @@ test:
 sbt clean test
 ```
 
+test with coverage:
+```bash
+sbt clean coverage test
+```
+
+
 ## architecture overview
 ### actor system
 > Note that this architecture overview may not be up to date. Code reference should be the internal actor system indicator
