@@ -20,7 +20,6 @@ object InfoReactor {
   case class Information(appName: String, version: String, author: String) {
     override def toString = response(appName, version, author)
   }
-
 }
 
 class InfoReactor(val information: Information,
