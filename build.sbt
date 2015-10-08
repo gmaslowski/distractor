@@ -2,9 +2,9 @@ name := """distractor"""
 
 version := "0.1-SNAPSHOT"
 
-scalaVersion := "2.11.6"
+scalaVersion := "2.11.7"
 
-val akkaVersion = "2.3.13"
+val akkaVersion = "2.4.0"
 val scalatestVersion = "2.2.5"
 val scalamockVersion = "3.2.2"
 val mockitoVersion = "1.10.19"

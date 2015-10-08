@@ -4,6 +4,7 @@ distractor
 [![Stories in Ready](https://badge.waffle.io/gmaslowski/distractor.svg?label=ready&title=Ready)](http://waffle.io/gmaslowski/distractor)
 [![Stories in In Progress](https://badge.waffle.io/gmaslowski/distractor.svg?label=in%20progress&title=In%20Progress)](http://waffle.io/gmaslowski/distractor)
 [![Build Status](https://snap-ci.com/gmaslowski/distractor/branch/develop/build_image)](https://snap-ci.com/gmaslowski/distractor/branch/develop)
+[![codecov.io](http://codecov.io/github/gmaslowski/distractor/coverage.svg?branch=develop)](http://codecov.io/github/gmaslowski/distractor?branch=develop)
 
 ## project information
 Distractor is a continuation of [reactor](https://github.com/FutureProcessing/reactor). The aim of the project is to write
