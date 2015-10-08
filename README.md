@@ -1,6 +1,8 @@
 distractor
 ==========
 
+[![Join the chat at https://gitter.im/gmaslowski/distractor](https://badges.gitter.im/Join%20Chat.svg)](https://gitter.im/gmaslowski/distractor?utm_source=badge&utm_medium=badge&utm_campaign=pr-badge&utm_content=badge)
+
 [![Stories in Ready](https://badge.waffle.io/gmaslowski/distractor.svg?label=ready&title=Ready)](http://waffle.io/gmaslowski/distractor)
 [![Stories in In Progress](https://badge.waffle.io/gmaslowski/distractor.svg?label=in%20progress&title=In%20Progress)](http://waffle.io/gmaslowski/distractor)
 [![Build Status](https://snap-ci.com/gmaslowski/distractor/branch/develop/build_image)](https://snap-ci.com/gmaslowski/distractor/branch/develop)
