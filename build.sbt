@@ -9,7 +9,8 @@ val scalatestVersion = "2.2.5"
 val scalamockVersion = "3.2.2"
 val mockitoVersion = "1.10.19"
 val minaVersion = "2.0.9"
-val logbackVersion= "1.1.3"
+val logbackVersion = "1.1.3"
+val skypeApiVersion = "1.7"
 
 libraryDependencies ++= Seq(
   // Actor System
@@ -17,6 +18,7 @@ libraryDependencies ++= Seq(
   "com.typesafe.akka" %% "akka-kernel" % akkaVersion,
   // Goodies
   "org.apache.mina" % "mina-core" % minaVersion,
+  "com.github.taksan" % "skype-java-api" % skypeApiVersion,
   "ch.qos.logback" % "logback-classic" % logbackVersion,
   "com.typesafe.akka" %% "akka-slf4j" % akkaVersion,
   // Testing Frameworks

@@ -21,6 +21,7 @@ import scala.collection.mutable
 import scala.concurrent.duration.FiniteDuration
 
 object TelnetTransport {
+
   val TELNET_PORT: Int = 8111
   val ONE_SECOND: FiniteDuration = FiniteDuration.apply(1, SECONDS)
 

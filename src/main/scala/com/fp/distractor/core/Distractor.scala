@@ -9,6 +9,7 @@ import com.fp.distractor.core.reactor.info.InfoReactor.Information
 import com.fp.distractor.core.reactor.system.SystemReactor
 import com.fp.distractor.core.transport.TransportRegistry
 import com.fp.distractor.registry.ActorRegistry.RegisterMsg
+import com.fp.distractor.transport.skype.SkypeTransport
 import com.fp.distractor.transport.telnet.TelnetTransport
 
 class DistractorKernel extends Bootable {
@@ -20,6 +21,7 @@ class DistractorKernel extends Bootable {
 
     // fixme: transport should be distractor-kernel independent
     system.actorOf(TelnetTransport.props, "telnet")
+    system.actorOf(SkypeTransport.props, "skype")
   }
 
   def shutdown = {
