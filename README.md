@@ -18,6 +18,8 @@ run:
 sh sbt-run.sh
 ```
 
+### testing
+
 test:
 ```bash
 sbt clean test
@@ -28,11 +30,24 @@ test with coverage:
 sbt clean coverage test
 ```
 
+### packaging
+
 create fat jar:
 ```bash
 sbt assembly
 ```
 
+### docker
+
+build docker images (does also the assembly):
+```bash
+sbt docker
+```
+
+run built image:
+```bash
+docker run -p 8111:8111 default/distractor
+```
 
 ## architecture overview
 ### actor system

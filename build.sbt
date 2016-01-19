@@ -25,4 +25,19 @@ libraryDependencies ++= Seq(
 
 mainClass in Compile := Some("com.gmaslowski.distractor.core.DistractorBootstrap")
 
+enablePlugins(DockerPlugin)
+
+// Make the docker task depend on the assembly task, which generates a fat JAR file
+docker <<= (docker dependsOn assembly)
+
+dockerfile in docker := {
+  val artifact = (outputPath in assembly).value
+  val artifactTargetPath = s"/app/${artifact.name}"
+  new Dockerfile {
+    from("gmaslowski/java8")
+    add(artifact, artifactTargetPath)
+    entryPoint("java", "-jar", artifactTargetPath)
+  }
+}
+
 resolvers += "Sonatype OSS Releases" at "https://oss.sonatype.org/content/repositories/releases/"
