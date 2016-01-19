@@ -22,26 +22,26 @@ sh sbt-run.sh
 
 test:
 ```bash
-sbt clean test
+./activator clean test
 ```
 
 test with coverage:
 ```bash
-sbt clean coverage test
+./activator clean coverage test
 ```
 
 ### packaging
 
 create fat jar:
 ```bash
-sbt assembly
+./activator assembly
 ```
 
 ### docker
 
 build docker images (does also the assembly):
 ```bash
-sbt docker
+./activator docker
 ```
 
 run built image:
