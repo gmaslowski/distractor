@@ -1,1 +1,2 @@
-sbt "run-main akka.kernel.Main com.fp.distractor.core.DistractorKernel"
+#!/usr/bin/env bash
+./activator "run-main com.gmaslowski.distractor.core.DistractorBootstrap"
