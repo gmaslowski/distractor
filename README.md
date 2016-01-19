@@ -28,6 +28,11 @@ test with coverage:
 sbt clean coverage test
 ```
 
+create fat jar:
+```bash
+sbt assembly
+```
+
 
 ## architecture overview
 ### actor system
