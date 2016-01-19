@@ -1,7 +1,6 @@
 package com.gmaslowski.distractor.core
 
 import akka.actor._
-import akka.kernel.Bootable
 import com.gmaslowski.distractor.core.api.DistractorRequestHandler
 import com.gmaslowski.distractor.core.reactor.ReactorRegistry
 import com.gmaslowski.distractor.core.reactor.info.InfoReactor
@@ -11,20 +10,30 @@ import com.gmaslowski.distractor.core.transport.TransportRegistry
 import com.gmaslowski.distractor.registry.ActorRegistry.RegisterMsg
 import com.gmaslowski.distractor.transport.telnet.TelnetTransport
 
-class DistractorKernel extends Bootable {
+object DistractorBootstrap {
 
-  val system = ActorSystem("distractor")
+  def main(args: Array[String]): Unit = {
+    val system = ActorSystem("distractor")
 
-  def startup = {
-    system.actorOf(Distractor.props, "distractor")
+    val distractor = system.actorOf(Props[Distractor], "distractor")
 
     // fixme: transport should be distractor-kernel independent
     system.actorOf(TelnetTransport.props, "telnet")
+
+    // app terminator
+    system.actorOf(Props(classOf[Terminator], distractor), "terminator")
   }
 
-  def shutdown = {
-    system.shutdown()
+  class Terminator(ref: ActorRef) extends Actor with ActorLogging {
+    context watch ref
+
+    def receive = {
+      case Terminated(_) =>
+        log.info("{} has terminated, shutting down system.", ref.path)
+        context.system.terminate()
+    }
   }
+
 }
 
 object Distractor {
@@ -42,6 +51,7 @@ class Distractor extends Actor with ActorLogging {
   }
 
   override def preStart() = {
+
     transportRegistry = context.actorOf(TransportRegistry.props, "transport-registry")
     reactorRegistry = context.actorOf(ReactorRegistry.props, "reactor-registry")
     requestHandler = context.actorOf(DistractorRequestHandler.props(reactorRegistry), "request-handler")
