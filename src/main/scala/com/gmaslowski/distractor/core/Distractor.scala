@@ -8,6 +8,7 @@ import com.gmaslowski.distractor.core.reactor.info.InfoReactor.Information
 import com.gmaslowski.distractor.core.reactor.system.SystemReactor
 import com.gmaslowski.distractor.core.transport.TransportRegistry
 import com.gmaslowski.distractor.registry.ActorRegistry.RegisterMsg
+import com.gmaslowski.distractor.transport.http.rest.HttpRestTransport
 import com.gmaslowski.distractor.transport.telnet.TelnetTransport
 
 object DistractorBootstrap {
@@ -17,8 +18,9 @@ object DistractorBootstrap {
 
     val distractor = system.actorOf(Props[Distractor], "distractor")
 
-    // fixme: transport should be distractor-kernel independent
+    // fixme: transports should be distractor-kernel independent
     system.actorOf(TelnetTransport.props, "telnet")
+    system.actorOf(HttpRestTransport.props, "http-rest")
 
     // app terminator
     system.actorOf(Props(classOf[Terminator], distractor), "terminator")
