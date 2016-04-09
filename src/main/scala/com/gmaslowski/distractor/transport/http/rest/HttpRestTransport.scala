@@ -5,7 +5,7 @@ import java.util.concurrent.TimeUnit.SECONDS
 import akka.actor.{Actor, ActorLogging, Props}
 import akka.http.scaladsl.Http
 import akka.http.scaladsl.marshallers.sprayjson.SprayJsonSupport
-import akka.http.scaladsl.model.HttpEntity
+import akka.http.scaladsl.marshalling.ToResponseMarshallable
 import akka.http.scaladsl.server.Directives._
 import akka.pattern.Patterns.ask
 import akka.stream.ActorMaterializer
@@ -15,7 +15,7 @@ import com.gmaslowski.distractor.registry.ActorRegistry.RegisterMsg
 import com.gmaslowski.distractor.transport.http.rest.HttpRestTransport.{HTTP_PORT, RestCommand}
 import spray.json.DefaultJsonProtocol
 
-import scala.concurrent.Await
+import scala.concurrent.ExecutionContextExecutor
 import scala.concurrent.duration.FiniteDuration
 
 object HttpRestMarshallers extends DefaultJsonProtocol with SprayJsonSupport {
@@ -28,6 +28,7 @@ object HttpRestTransport {
   def props = Props[HttpRestTransport]
 
   final case class RestCommand(message: String)
+
 }
 
 class HttpRestTransport extends Actor with ActorLogging {
@@ -35,16 +36,19 @@ class HttpRestTransport extends Actor with ActorLogging {
   import HttpRestMarshallers._
 
   implicit val materializer = ActorMaterializer()
+  implicit val ec = context.dispatcher
 
   val route =
     (post & path("rest-api") & entity(as[RestCommand])) { restCommand =>
-      val future = ask(context.actorSelection("akka://distractor/user/distractor/request-handler"),
-        new DistractorApi.DistractorRequest(restCommand.message),
-        FiniteDuration.apply(1, SECONDS))
+      complete {
+        val future = ask(context.actorSelection("akka://distractor/user/distractor/request-handler"),
+          new DistractorApi.DistractorRequest(restCommand.message),
+          FiniteDuration.apply(1, SECONDS))
 
-
-      val result = Await.result(future, FiniteDuration.apply(1, SECONDS)).asInstanceOf[Say]
-      complete(HttpEntity(result.message.toString))
+        future.map[ToResponseMarshallable] {
+          case Say(message) => message.toString
+        }
+      }
     }
 
   Http(context.system).bindAndHandle(route, "localhost", HTTP_PORT)
@@ -55,7 +59,6 @@ class HttpRestTransport extends Actor with ActorLogging {
 
   override def receive: Receive = {
     case Say(message) =>
-
   }
 }
 
