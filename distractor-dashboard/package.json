@@ -3,7 +3,7 @@
   "version": "0.1.0",
   "description": "Dashboard for distractor-http-rest transport",
   "scripts": {
-    "start": "webpack-dev-server --content-base app"
+    "start": "webpack-dev-server -d --content-base app"
   },
   "author": "Greg Maslowski",
   "homepage": "http://gmaslowski.com/projects",

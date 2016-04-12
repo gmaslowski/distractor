@@ -1,7 +1,7 @@
 module.exports = {
     context: __dirname + '/app',
     entry: {
-        dashboard: ['./distractor-dashboard.app.js', './dashboard/dashboard.module.js', './dashboard/dashboard.routing.js']
+        dashboard: './distractor-dashboard.app.js'
     },
     output: {
         path: __dirname + '/app',

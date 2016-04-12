@@ -1,6 +1,8 @@
 require('angular');
 require('angular-ui-router');
 
+require('./dashboard/dashboard.module.js');
+
 angular.module('distractor-dashboard', [
     // dependencies
     'ui.router',
