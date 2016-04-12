@@ -1,48 +1,12 @@
-name := """distractor"""
-version := "0.1-SNAPSHOT"
-scalaVersion := "2.11.8"
+lazy val root = project.in(file("."))
+  .aggregate(distractor_core)
 
-val akkaVersion = "2.4.3"
-val scalatestVersion = "2.2.6"
-val mockitoVersion = "1.10.19"
-val minaVersion = "2.0.9"
-val logbackVersion = "1.1.3"
+lazy val distractor_core = project.in(file("distractor-core"))
 
-libraryDependencies ++= Seq(
-  // Actor System
-  "com.typesafe.akka" %% "akka-actor" % akkaVersion,
+lazy val distractor_dashboard = project.in(file("distractor-dashboard"))
 
-  // Akka Http
-  "com.typesafe.akka" %% "akka-http-core" % akkaVersion,
-  "com.typesafe.akka" %% "akka-http-experimental" % akkaVersion,
-  "com.typesafe.akka" %% "akka-http-spray-json-experimental" % akkaVersion,
+lazy val distractor_reactor_info = project.in(file("distractor-reactor-info"))
+lazy val distractor_reactor_system = project.in(file("distractor-reactor-system"))
 
-  // Goodies
-  "org.apache.mina" % "mina-core" % minaVersion,
-  "ch.qos.logback" % "logback-classic" % logbackVersion,
-  "com.typesafe.akka" %% "akka-slf4j" % akkaVersion,
-
-  // Testing Frameworks
-  "com.typesafe.akka" %% "akka-testkit" % akkaVersion % "test",
-  "org.scalatest" %% "scalatest" % scalatestVersion % "test",
-  "org.mockito" % "mockito-core" % mockitoVersion % "test"
-)
-
-mainClass in Compile := Some("com.gmaslowski.distractor.core.DistractorBootstrap")
-
-enablePlugins(DockerPlugin)
-
-// Make the docker task depend on the assembly task, which generates a fat JAR file
-docker <<= (docker dependsOn assembly)
-
-dockerfile in docker := {
-  val artifact = (outputPath in assembly).value
-  val artifactTargetPath = s"/app/${artifact.name}"
-  new Dockerfile {
-    from("gmaslowski/jdk:8")
-    add(artifact, artifactTargetPath)
-    entryPoint("java", "-jar", artifactTargetPath)
-  }
-}
-
-resolvers += "Sonatype OSS Releases" at "https://oss.sonatype.org/content/repositories/releases/"
+lazy val distractor_transport_telnet = project.in(file("distractor-transport-telnet"))
+lazy val distractor_transport_http_rest = project.in(file("distractor-transport-http-rest"))
