@@ -1,3 +1,6 @@
 angular.module('distractor-dashboard.commons', [
-    'ui.router'
+    // UI Router
+    'ui.router',
+    // Angular Material
+    'ngMaterial'
 ]);

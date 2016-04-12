@@ -1,8 +1,13 @@
 require('angular');
+require('angular-animate');
+require('angular-aria');
 require('angular-ui-router');
+require('angular-messages');
+require('angular-material');
 
 require('./commons/commons.module.js');
 require('./dashboard/dashboard.module.js');
+
 
 angular.module('distractor-dashboard', [
     // commons
@@ -17,10 +22,11 @@ angular.module('distractor-dashboard')
 
 distractorRouting.$inject = [
     '$urlRouterProvider',
-    '$stateProvider'
+    '$stateProvider',
+    '$mdThemingProvider'
 ];
 
-function distractorRouting($urlRouterProvider, $stateProvider) {
+function distractorRouting($urlRouterProvider, $stateProvider, $mdThemingProvider) {
     $urlRouterProvider.otherwise('/dashboard');
 
     $stateProvider.state('main', {
@@ -28,5 +34,8 @@ function distractorRouting($urlRouterProvider, $stateProvider) {
         templateUrl: './commons/common-template.html'
     });
 
+    $mdThemingProvider.theme('default')
+        .primaryPalette('pink')
+        .accentPalette('orange');
 }
 

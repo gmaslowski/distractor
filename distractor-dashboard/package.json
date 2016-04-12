@@ -9,12 +9,18 @@
   "homepage": "http://gmaslowski.com/projects",
   "dependencies": {
     "angular": "1.5.3",
+    "angular-animate": "1.5.3",
+    "angular-aria": "1.5.3",
+    "angular-messages": "1.5.3",
     "angular-ui-router": "0.2.18",
-    "angular-material": "git://github.com/angular/material.git#v1.1.0-rc2"
+    "angular-material": "1.0.7"
   },
   "devDependencies": {
     "html-webpack-plugin": "^2.7.1",
     "html-loader": "0.4.3",
+    "css-loader": "0.23.1",
+    "style-loader": "^0.12.3",
+    "extract-text-webpack-plugin": "^0.8.2",
     "webpack": "^1.12.13",
     "webpack-dev-server": "^1.14.1"
   }
