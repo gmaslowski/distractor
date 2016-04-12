@@ -6,8 +6,8 @@ dashboardRouting.$inject = ['$stateProvider'];
 function dashboardRouting($stateProvider) {
     $stateProvider.state('main.dashboard', {
         url: '/dashboard',
-        controller: 'distractor-dashboard.dashboard',
-        controllerAs: 'dashboard',
-        templateUrl: 'dashboard/dashboard.html'
+        templateUrl: 'dashboard/dashboard.html',
+        controller: 'distractor-dashboard.dashboard.controller',
+        controllerAs: 'dashboard'
     });
 }

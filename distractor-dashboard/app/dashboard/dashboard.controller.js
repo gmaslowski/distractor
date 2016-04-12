@@ -4,5 +4,8 @@ angular.module('distractor-dashboard.dashboard')
 dashboardController.$inject = [];
 
 function dashboardController() {
+
+    var vm = this;
+
     console.log("hello! :P");
 }

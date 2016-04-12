@@ -1,6 +1,6 @@
-angular.module('distractor-dashboard.dashboard', []);
+angular.module('distractor-dashboard.dashboard', ['distractor-dashboard.commons']);
 
-require('./dashboard.routing.js');
-require('./dashboard.controller.js');
 require('html!./dashboard.html');
+require('./dashboard.controller.js');
+require('./dashboard.routing.js');
 

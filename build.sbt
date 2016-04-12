@@ -1,12 +1,18 @@
-lazy val root = project.in(file("."))
+import sbt._
+
+lazy val distractor = project.in(file("."))
   .aggregate(distractor_core)
 
-lazy val distractor_core = project.in(file("distractor-core"))
+// core
+lazy val distractor_core = Project(id = "distractor-core", base = file("distractor-core"))
 
-lazy val distractor_dashboard = project.in(file("distractor-dashboard"))
+// ui
+lazy val distractor_dashboard = Project(id = "distractor-dashboard", base = file("distractor-dashboard"))
 
-lazy val distractor_reactor_info = project.in(file("distractor-reactor-info"))
-lazy val distractor_reactor_system = project.in(file("distractor-reactor-system"))
+// reactors
+lazy val distractor_reactor_info = Project(id = "distractor-reactor-info", base = file("distractor-reactor-info"))
+lazy val distractor_reactor_system = Project(id = "distractor-reactor-system", base = file("distractor-reactor-system"))
 
-lazy val distractor_transport_telnet = project.in(file("distractor-transport-telnet"))
-lazy val distractor_transport_http_rest = project.in(file("distractor-transport-http-rest"))
+// transport
+lazy val distractor_transport_telnet = Project(id = "distractor-transport-telnet", base = file("distractor-transport-telnet"))
+lazy val distractor_transport_http_rest = Project(id = "distractor-transport-http-rest", base = file("distractor-transport-http-rest"))
