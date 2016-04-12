@@ -16,10 +16,17 @@ angular.module('distractor-dashboard')
     .config(distractorRouting);
 
 distractorRouting.$inject = [
-    '$urlRouterProvider'
+    '$urlRouterProvider',
+    '$stateProvider'
 ];
 
-function distractorRouting($urlRouterProvider) {
+function distractorRouting($urlRouterProvider, $stateProvider) {
     $urlRouterProvider.otherwise('/dashboard');
+
+    $stateProvider.state('main', {
+        abstract: true,
+        templateUrl: './commons/common-template.html'
+    });
+
 }
 
