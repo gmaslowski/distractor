@@ -1,11 +1,9 @@
 package com.gmaslowski.distractor.core.api
 
 import akka.actor.{Actor, ActorLogging, ActorRef, Props}
-import DistractorApi.DistractorRequest
-import DistractorRequestHandler.extractReactorAndCommandFrom
-import com.gmaslowski.distractor.core.reactor.api.ReactorApi
-import ReactorApi.ReactorRequest
 import com.gmaslowski.distractor.core.api.DistractorApi.DistractorRequest
+import com.gmaslowski.distractor.core.api.DistractorRequestHandler.extractReactorAndCommandFrom
+import com.gmaslowski.distractor.core.reactor.api.ReactorApi.ReactorRequest
 
 object DistractorRequestHandler {
 

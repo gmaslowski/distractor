@@ -4,14 +4,13 @@ import akka.testkit.{TestActorRef, TestProbe}
 import com.gmaslowski.common.AkkaActorTest
 import com.gmaslowski.distractor.core.reactor.api.ReactorApi
 import ReactorApi.ReactorRequest
-import com.gmaslowski.distractor.core.reactor.info.InfoReactor
-import InfoReactor.Information
-import com.gmaslowski.distractor.core.reactor.info.InfoReactor
-import com.gmaslowski.distractor.core.transport.api.{TransportApi, Message}
+import com.gmaslowski.distractor.core.transport.api.{Message, TransportApi}
 import TransportApi.Say
 import com.gmaslowski.distractor.registry.ActorRegistry
 import ActorRegistry.{GetRegisteredMsg, RegisteredMsg}
 import com.gmaslowski.distractor.core.transport.api.Message
+import com.gmaslowski.distractor.transport.info.InfoReactor
+import com.gmaslowski.distractor.transport.info.InfoReactor.Information
 
 class InfoReactorTest extends AkkaActorTest {
 

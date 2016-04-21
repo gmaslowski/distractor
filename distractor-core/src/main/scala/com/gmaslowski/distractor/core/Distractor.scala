@@ -3,12 +3,12 @@ package com.gmaslowski.distractor.core
 import akka.actor._
 import com.gmaslowski.distractor.core.api.DistractorRequestHandler
 import com.gmaslowski.distractor.core.reactor.ReactorRegistry
-import com.gmaslowski.distractor.core.reactor.info.InfoReactor
-import com.gmaslowski.distractor.core.reactor.info.InfoReactor.Information
-import com.gmaslowski.distractor.core.reactor.system.SystemReactor
 import com.gmaslowski.distractor.core.transport.TransportRegistry
+//import com.gmaslowski.distractor.reactor.system.SystemReactor
 import com.gmaslowski.distractor.registry.ActorRegistry.RegisterMsg
 import com.gmaslowski.distractor.transport.http.rest.HttpRestTransport
+import com.gmaslowski.distractor.transport.info.InfoReactor
+import com.gmaslowski.distractor.transport.info.InfoReactor.Information
 import com.gmaslowski.distractor.transport.telnet.TelnetTransport
 
 object DistractorBootstrap {
@@ -59,7 +59,8 @@ class Distractor extends Actor with ActorLogging {
     requestHandler = context.actorOf(DistractorRequestHandler.props(reactorRegistry), "request-handler")
 
     createAndRegisterInfoReactor
-    reactorRegistry ! RegisterMsg("system", context.actorOf(SystemReactor.props))
+    // todo: asap find a way of dynamic registering of reactors and transports by using API only
+    // reactorRegistry ! RegisterMsg("system", context.actorOf(SystemReactor.props))
   }
 
   def createAndRegisterInfoReactor: Unit = {

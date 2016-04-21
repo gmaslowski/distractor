@@ -1,12 +1,12 @@
-package com.gmaslowski.distractor.core.reactor.info
+package com.gmaslowski.distractor.transport.info
 
 import akka.actor.{Actor, ActorLogging, ActorRef, Props}
 import akka.pattern.Patterns
 import com.gmaslowski.distractor.core.reactor.api.ReactorApi.ReactorRequest
-import com.gmaslowski.distractor.core.reactor.info.InfoReactor.Information
 import com.gmaslowski.distractor.core.transport.api.Message
 import com.gmaslowski.distractor.core.transport.api.TransportApi.Say
 import com.gmaslowski.distractor.registry.ActorRegistry.{GetRegisteredMsg, RegisteredMsg}
+import com.gmaslowski.distractor.transport.info.InfoReactor.Information
 
 import scala.concurrent.Future
 import scala.util.{Failure, Success}
