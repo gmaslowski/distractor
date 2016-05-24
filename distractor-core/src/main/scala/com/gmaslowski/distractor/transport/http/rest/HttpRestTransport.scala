@@ -10,12 +10,11 @@ import akka.http.scaladsl.server.Directives._
 import akka.pattern.Patterns.ask
 import akka.stream.ActorMaterializer
 import com.gmaslowski.distractor.core.api.DistractorApi
-import com.gmaslowski.distractor.core.transport.api.TransportApi.Say
-import com.gmaslowski.distractor.registry.ActorRegistry.RegisterMsg
+import com.gmaslowski.distractor.core.api.DistractorApi.RegisterMsg
+import com.gmaslowski.distractor.core.reactor.api.ReactorApi.ReactorResponse
 import com.gmaslowski.distractor.transport.http.rest.HttpRestTransport.{HTTP_PORT, RestCommand}
 import spray.json.DefaultJsonProtocol
 
-import scala.concurrent.ExecutionContextExecutor
 import scala.concurrent.duration.FiniteDuration
 
 object HttpRestMarshallers extends DefaultJsonProtocol with SprayJsonSupport {
@@ -46,7 +45,7 @@ class HttpRestTransport extends Actor with ActorLogging {
           FiniteDuration.apply(1, SECONDS))
 
         future.map[ToResponseMarshallable] {
-          case Say(message) => message.toString
+          case ReactorResponse(reactorId, message) => message
         }
       }
     }
@@ -58,7 +57,7 @@ class HttpRestTransport extends Actor with ActorLogging {
   }
 
   override def receive: Receive = {
-    case Say(message) =>
+    case ReactorResponse(reactorId, message) =>
   }
 }
 

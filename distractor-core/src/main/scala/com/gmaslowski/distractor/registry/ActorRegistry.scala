@@ -1,14 +1,15 @@
 package com.gmaslowski.distractor.registry
 
 import akka.actor.{Actor, ActorRef}
-import ActorRegistry.{RegisteredMsg, GetRegisteredMsg, UnregisterMsg, RegisterMsg}
+import com.gmaslowski.distractor.core.api.DistractorApi.{RegisterMsg, UnregisterMsg}
+import com.gmaslowski.distractor.registry.ActorRegistry.{GetRegisteredMsg, RegisteredMsg}
 
 object ActorRegistry {
 
-  case class RegisterMsg(id: String, toRegister: ActorRef)
-  case class UnregisterMsg(id: String)
   case object GetRegisteredMsg
+
   case class RegisteredMsg(list: List[String])
+
 }
 
 trait ActorRegistry extends Actor {

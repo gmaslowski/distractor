@@ -5,7 +5,6 @@ scalaVersion := "2.11.8"
 val akkaVersion = "2.4.3"
 val scalatestVersion = "2.2.6"
 val mockitoVersion = "1.10.19"
-val minaVersion = "2.0.9"
 val logbackVersion = "1.1.3"
 
 libraryDependencies ++= Seq(
@@ -18,7 +17,6 @@ libraryDependencies ++= Seq(
   "com.typesafe.akka" %% "akka-http-spray-json-experimental" % akkaVersion,
 
   // Goodies
-  "org.apache.mina" % "mina-core" % minaVersion,
   "ch.qos.logback" % "logback-classic" % logbackVersion,
   "com.typesafe.akka" %% "akka-slf4j" % akkaVersion,
 

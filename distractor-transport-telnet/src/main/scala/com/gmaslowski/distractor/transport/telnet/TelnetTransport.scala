@@ -6,8 +6,7 @@ import java.nio.charset.Charset
 import java.util.concurrent.TimeUnit.SECONDS
 
 import akka.actor.{Actor, ActorLogging, Props}
-import com.gmaslowski.distractor.core.transport.api.TransportApi.Say
-import com.gmaslowski.distractor.registry.ActorRegistry.RegisterMsg
+import com.gmaslowski.distractor.core.api.DistractorApi.{DistractorResponse, RegisterMsg}
 import com.gmaslowski.distractor.transport.telnet.TelnetTransport.TELNET_PORT
 import org.apache.mina.core.session.IdleStatus.BOTH_IDLE
 import org.apache.mina.core.session.IoSession
@@ -17,6 +16,7 @@ import org.apache.mina.filter.logging.LoggingFilter
 import org.apache.mina.transport.socket.SocketSessionConfig
 import org.apache.mina.transport.socket.nio.NioSocketAcceptor
 
+import scala.collection.JavaConverters._
 import scala.collection.mutable
 import scala.concurrent.duration.FiniteDuration
 
@@ -28,8 +28,6 @@ object TelnetTransport {
 }
 
 class TelnetTransport extends Actor with ActorLogging {
-
-  import scala.collection.JavaConverters._
 
   var acceptor: NioSocketAcceptor = new NioSocketAcceptor
 
@@ -62,12 +60,12 @@ class TelnetTransport extends Actor with ActorLogging {
   }
 
   override def receive: Receive = {
-    case Say(message) =>
+    case DistractorResponse(message) =>
       val sessions: mutable.Map[Long, IoSession] = acceptor.getManagedSessions.asScala.seq
 
-      log.info(message.toString)
+      log.info(message)
 
       // todo: write response
-      sessions.foreach(entry => entry._2.write(message.command))
+      sessions.foreach(entry => entry._2.write(message))
   }
 }

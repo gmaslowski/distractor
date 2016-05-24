@@ -1,13 +1,10 @@
 package com.gmaslowski.distractor.reactor
 
 import akka.testkit.{TestActorRef, TestProbe}
-import com.gmaslowski.common.AkkaActorTest
-import com.gmaslowski.distractor.core.reactor.ReactorRegistry
-import ReactorRegistry.props
-import com.gmaslowski.distractor.core.reactor.api.ReactorApi
-import ReactorApi.ReactorRequest
-import com.gmaslowski.distractor.registry.ActorRegistry
-import ActorRegistry.RegisterMsg
+import com.gmaslowski.distractor.core.api.DistractorApi.RegisterMsg
+import com.gmaslowski.distractor.core.reactor.ReactorRegistry.props
+import com.gmaslowski.distractor.core.reactor.api.ReactorApi.ReactorRequest
+import com.gmaslowski.distractor.test.common.AkkaActorTest
 
 class ReactorRegistryTest extends AkkaActorTest {
 

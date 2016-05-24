@@ -1,4 +1,4 @@
-package com.gmaslowski.common
+package com.gmaslowski.distractor.test.common
 
 import akka.actor.ActorSystem
 import akka.testkit.{ImplicitSender, TestKit}

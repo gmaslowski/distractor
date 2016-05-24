@@ -2,9 +2,9 @@ package com.gmaslowski.distractor.registry
 
 import akka.actor.{Actor, Props}
 import akka.testkit.{TestActorRef, TestProbe}
-import ActorRegistry.{RegisteredMsg, GetRegisteredMsg, RegisterMsg, UnregisterMsg}
-import com.gmaslowski.common.AkkaActorTest
-import com.gmaslowski.distractor.registry.ActorRegistry.GetRegisteredMsg
+import com.gmaslowski.distractor.core.api.DistractorApi.{RegisterMsg, UnregisterMsg}
+import com.gmaslowski.distractor.registry.ActorRegistry.{GetRegisteredMsg, RegisteredMsg}
+import com.gmaslowski.distractor.test.common.AkkaActorTest
 
 class ActorRegistryTest extends AkkaActorTest {
 

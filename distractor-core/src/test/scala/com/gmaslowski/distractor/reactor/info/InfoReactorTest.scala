@@ -1,14 +1,11 @@
 package com.gmaslowski.distractor.reactor.info
 
 import akka.testkit.{TestActorRef, TestProbe}
-import com.gmaslowski.common.AkkaActorTest
 import com.gmaslowski.distractor.core.reactor.api.ReactorApi
-import ReactorApi.ReactorRequest
-import com.gmaslowski.distractor.core.transport.api.{Message, TransportApi}
-import TransportApi.Say
+import com.gmaslowski.distractor.core.reactor.api.ReactorApi.{ReactorRequest, ReactorResponse}
 import com.gmaslowski.distractor.registry.ActorRegistry
-import ActorRegistry.{GetRegisteredMsg, RegisteredMsg}
-import com.gmaslowski.distractor.core.transport.api.Message
+import com.gmaslowski.distractor.registry.ActorRegistry.{GetRegisteredMsg, RegisteredMsg}
+import com.gmaslowski.distractor.test.common.AkkaActorTest
 import com.gmaslowski.distractor.transport.info.InfoReactor
 import com.gmaslowski.distractor.transport.info.InfoReactor.Information
 
@@ -34,7 +31,7 @@ class InfoReactorTest extends AkkaActorTest {
       transportRegistry.reply(RegisteredMsg(List("telnet", "skype")))
 
       // then
-      expectMsg(new Say(new Message("info", s"$expectedInformation\ntransports or reactors:\ntelnet\nskype\n\ntransports or reactors:\ninfo\nsystem\n")))
+      expectMsg(ReactorResponse("info", s"$expectedInformation\ntransports or reactors:\ntelnet\nskype\n\ntransports or reactors:\ninfo\nsystem\n"))
     }
   }
 }

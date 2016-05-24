@@ -1,11 +1,10 @@
 package com.gmaslowski.distractor.core
 
 import akka.actor._
+import com.gmaslowski.distractor.core.api.DistractorApi.RegisterMsg
 import com.gmaslowski.distractor.core.api.DistractorRequestHandler
 import com.gmaslowski.distractor.core.reactor.ReactorRegistry
 import com.gmaslowski.distractor.core.transport.TransportRegistry
-//import com.gmaslowski.distractor.reactor.system.SystemReactor
-import com.gmaslowski.distractor.registry.ActorRegistry.RegisterMsg
 import com.gmaslowski.distractor.transport.http.rest.HttpRestTransport
 import com.gmaslowski.distractor.transport.info.InfoReactor
 import com.gmaslowski.distractor.transport.info.InfoReactor.Information

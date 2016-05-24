@@ -2,12 +2,12 @@ package com.gmaslowski.distractor.core
 
 import akka.actor.Props
 import akka.testkit.{TestActorRef, TestProbe}
-import com.gmaslowski.common.AkkaActorTest
 import com.gmaslowski.distractor.core.api.{DistractorApi, DistractorRequestHandler}
 import DistractorApi.DistractorRequest
 import com.gmaslowski.distractor.core.api.DistractorRequestHandler
 import com.gmaslowski.distractor.core.reactor.api.ReactorApi
 import ReactorApi.ReactorRequest
+import com.gmaslowski.distractor.test.common.AkkaActorTest
 
 class DistractorRequestHandlerTest extends AkkaActorTest {
 

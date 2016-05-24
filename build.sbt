@@ -3,10 +3,13 @@ import sbt._
 lazy val distractor = project.in(file("."))
   .aggregate(distractor_core)
 
-// core
+// commons
 lazy val distractor_api = Project(id = "distractor-api", base = file("distractor-api"))
+lazy val distractor_test_common = Project(id = "distractor-test-common", base = file("distractor-test-common"))
+
+// core
 lazy val distractor_core = Project(id = "distractor-core", base = file("distractor-core"))
-  .dependsOn(distractor_api)
+  .dependsOn(distractor_api, distractor_test_common, distractor_transport_telnet)
 
 // ui
 lazy val distractor_dashboard = Project(id = "distractor-dashboard", base = file("distractor-dashboard"))
@@ -18,4 +21,5 @@ lazy val distractor_reactor_system = Project(id = "distractor-reactor-system", b
 
 // transport
 lazy val distractor_transport_telnet = Project(id = "distractor-transport-telnet", base = file("distractor-transport-telnet"))
+  .dependsOn(distractor_api, distractor_test_common)
 lazy val distractor_transport_http_rest = Project(id = "distractor-transport-http-rest", base = file("distractor-transport-http-rest"))
