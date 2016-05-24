@@ -2,7 +2,10 @@ package com.gmaslowski.distractor.transport.telnet
 
 import akka.actor.{ActorRef, ActorSelection}
 import akka.event.LoggingAdapter
+import com.gmaslowski.distractor.test.common.AbstractUnitTest
 import org.apache.mina.core.session.IoSession
+import org.mockito.Matchers.any
+import org.mockito.Mockito.verify
 
 class TelnetHandlerTest extends AbstractUnitTest {
 

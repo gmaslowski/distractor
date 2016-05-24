@@ -1,7 +1,17 @@
 import sbt._
 
 lazy val distractor = project.in(file("."))
-  .aggregate(distractor_core)
+  .aggregate(
+    distractor_api,
+    distractor_test_common,
+
+    distractor_transport_telnet,
+
+    distractor_reactor_system,
+    distractor_reactor_info,
+
+    distractor_core
+  )
 
 // commons
 lazy val distractor_api = Project(id = "distractor-api", base = file("distractor-api"))
