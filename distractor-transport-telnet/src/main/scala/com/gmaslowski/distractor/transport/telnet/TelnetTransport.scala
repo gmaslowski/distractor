@@ -6,7 +6,8 @@ import java.nio.charset.Charset
 import java.util.concurrent.TimeUnit.SECONDS
 
 import akka.actor.{Actor, ActorLogging, Props}
-import com.gmaslowski.distractor.core.api.DistractorApi.{DistractorResponse, RegisterMsg}
+import com.gmaslowski.distractor.core.api.DistractorApi.RegisterMsg
+import com.gmaslowski.distractor.core.reactor.api.ReactorApi.ReactorResponse
 import com.gmaslowski.distractor.transport.telnet.TelnetTransport.TELNET_PORT
 import org.apache.mina.core.session.IdleStatus.BOTH_IDLE
 import org.apache.mina.core.session.IoSession
@@ -60,10 +61,8 @@ class TelnetTransport extends Actor with ActorLogging {
   }
 
   override def receive: Receive = {
-    case DistractorResponse(message) =>
+    case ReactorResponse(reactorId, message) =>
       val sessions: mutable.Map[Long, IoSession] = acceptor.getManagedSessions.asScala.seq
-
-      log.info(message)
 
       // todo: write response
       sessions.foreach(entry => entry._2.write(message))
