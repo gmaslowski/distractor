@@ -18,9 +18,10 @@ lazy val distractor = project.in(file("."))
 
     distractor_reactor_system,
     distractor_reactor_info,
+    distractor_reactor_jira,
 
     distractor_core
-  )
+  ).dependsOn(distractor_core)
 
 // commons
 lazy val distractor_api = Project(id = "distractor-api", base = file("distractor-api"))
@@ -34,7 +35,13 @@ lazy val distractor_test_common = Project(id = "distractor-test-common", base = 
 lazy val distractor_core = Project(id = "distractor-core", base = file("distractor-core"))
   .settings(commonSettings: _*)
   .settings(libraryDependencies += "com.typesafe.akka" %% "akka-actor" % akkaVersion)
-  .dependsOn(distractor_api, distractor_test_common, distractor_transport_telnet)
+  .dependsOn(
+    distractor_api,
+    distractor_test_common,
+    distractor_transport_telnet,
+    distractor_reactor_system,
+    distractor_reactor_jira)
+  .settings(mainClass in (Compile, run) := Some("com.gmaslowski.distractor.core.DistractorBootstrap"))
 
 // ui
 lazy val distractor_dashboard = Project(id = "distractor-dashboard", base = file("distractor-dashboard"))
@@ -48,8 +55,14 @@ lazy val distractor_reactor_system = Project(id = "distractor-reactor-system", b
   .settings(libraryDependencies += "com.typesafe.akka" %% "akka-actor" % akkaVersion)
   .settings(commonSettings: _*)
   .dependsOn(distractor_api)
+lazy val distractor_reactor_jira = Project(id = "distractor-reactor-jira", base = file("distractor-reactor-jira"))
+  .settings(libraryDependencies += "com.typesafe.akka" %% "akka-actor" % akkaVersion)
+  .settings(commonSettings: _*)
+  .dependsOn(distractor_api)
 
-// transport
+
+
+// transports
 lazy val distractor_transport_telnet = Project(id = "distractor-transport-telnet", base = file("distractor-transport-telnet"))
   .settings(libraryDependencies += "com.typesafe.akka" %% "akka-actor" % akkaVersion)
   .settings(commonSettings: _*)
@@ -58,3 +71,5 @@ lazy val distractor_transport_http_rest = Project(id = "distractor-transport-htt
   .settings(libraryDependencies += "com.typesafe.akka" %% "akka-actor" % akkaVersion)
   .settings(commonSettings: _*)
   .dependsOn(distractor_api, distractor_test_common)
+
+run in Compile <<= (run in Compile in distractor_core)

@@ -5,6 +5,8 @@ import com.gmaslowski.distractor.core.api.DistractorApi.RegisterMsg
 import com.gmaslowski.distractor.core.api.DistractorRequestHandler
 import com.gmaslowski.distractor.core.reactor.ReactorRegistry
 import com.gmaslowski.distractor.core.transport.TransportRegistry
+import com.gmaslowski.distractor.reactor.jira.JiraReactor
+import com.gmaslowski.distractor.reactor.system.SystemReactor
 import com.gmaslowski.distractor.transport.http.rest.HttpRestTransport
 import com.gmaslowski.distractor.transport.info.InfoReactor
 import com.gmaslowski.distractor.transport.info.InfoReactor.Information
@@ -59,7 +61,8 @@ class Distractor extends Actor with ActorLogging {
 
     createAndRegisterInfoReactor
     // todo: asap find a way of dynamic registering of reactors and transports by using API only
-    // reactorRegistry ! RegisterMsg("system", context.actorOf(SystemReactor.props))
+     reactorRegistry ! RegisterMsg("system", context.actorOf(SystemReactor.props))
+     reactorRegistry ! RegisterMsg("jira", context.actorOf(JiraReactor.props))
   }
 
   def createAndRegisterInfoReactor: Unit = {
