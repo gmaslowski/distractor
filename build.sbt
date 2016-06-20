@@ -10,6 +10,7 @@ lazy val commonSettings = Seq(
 )
 
 lazy val distractor = project.in(file("."))
+  .settings(scalaVersion := "2.11.8")
   .aggregate(
     distractor_api,
     distractor_test_common,
@@ -41,7 +42,7 @@ lazy val distractor_core = Project(id = "distractor-core", base = file("distract
     distractor_transport_telnet,
     distractor_reactor_system,
     distractor_reactor_jira)
-  .settings(mainClass in (Compile, run) := Some("com.gmaslowski.distractor.core.DistractorBootstrap"))
+  .settings(mainClass in(Compile, run) := Some("com.gmaslowski.distractor.core.DistractorBootstrap"))
 
 // ui
 lazy val distractor_dashboard = Project(id = "distractor-dashboard", base = file("distractor-dashboard"))
