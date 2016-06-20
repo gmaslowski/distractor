@@ -29,23 +29,10 @@ test with coverage:
 ./activator clean coverage test
 ```
 
-### packaging
-
-create fat jar:
+### run 
+run:
 ```bash
-./activator assembly
-```
-
-### docker
-
-build docker images (does also the assembly):
-```bash
-./activator docker
-```
-
-run built image:
-```bash
-docker run -p 8111:8111 default/distractor
+./activator run
 ```
 
 ## architecture overview
