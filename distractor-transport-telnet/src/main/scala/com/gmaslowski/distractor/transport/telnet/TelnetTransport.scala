@@ -6,7 +6,7 @@ import java.nio.charset.Charset
 import java.util.concurrent.TimeUnit.SECONDS
 
 import akka.actor.{Actor, ActorLogging, Props}
-import com.gmaslowski.distractor.core.api.DistractorApi.RegisterMsg
+import com.gmaslowski.distractor.core.api.DistractorApi.Register
 import com.gmaslowski.distractor.core.reactor.api.ReactorApi.ReactorResponse
 import com.gmaslowski.distractor.transport.telnet.TelnetTransport.TELNET_PORT
 import org.apache.mina.core.session.IdleStatus.BOTH_IDLE
@@ -42,7 +42,7 @@ class TelnetTransport extends Actor with ActorLogging {
     configureSession(acceptor.getSessionConfig)
 
     // fixme: think on API and how to communicate reactors with the kernel
-    context.actorSelection("akka://distractor/user/distractor/transport-registry") ! RegisterMsg("telnet", self)
+    context.actorSelection("akka://distractor/user/distractor/transport-registry") ! Register("telnet", self)
     acceptor.setHandler(new TelnetHandler(log, context.actorSelection("akka://distractor/user/distractor/request-handler"), self))
 
     // fixme: use future for that; or a spawned actor

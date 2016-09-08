@@ -7,6 +7,6 @@ object DistractorApi {
   case class DistractorRequest(command: String)
   case class DistractorResponse(message: String)
 
-  case class RegisterMsg(id: String, toRegister: ActorRef)
-  case class UnregisterMsg(id: String)
+  case class Register(id: String, toRegister: ActorRef)
+  case class Unregister(id: String)
 }

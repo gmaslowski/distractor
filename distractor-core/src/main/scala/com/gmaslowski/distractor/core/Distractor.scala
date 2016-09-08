@@ -1,7 +1,7 @@
 package com.gmaslowski.distractor.core
 
 import akka.actor._
-import com.gmaslowski.distractor.core.api.DistractorApi.RegisterMsg
+import com.gmaslowski.distractor.core.api.DistractorApi.Register
 import com.gmaslowski.distractor.core.api.DistractorRequestHandler
 import com.gmaslowski.distractor.core.reactor.ReactorRegistry
 import com.gmaslowski.distractor.core.transport.TransportRegistry
@@ -62,9 +62,9 @@ class Distractor extends Actor with ActorLogging {
 
     createAndRegisterInfoReactor
     // todo: asap find a way of dynamic registering of reactors and transports by using API only
-    reactorRegistry ! RegisterMsg("system", context.actorOf(SystemReactor.props))
-    reactorRegistry ! RegisterMsg("jira", context.actorOf(JiraReactor.props))
-    reactorRegistry ! RegisterMsg("springboot", context.actorOf(SpringBootActuatorReactor.props))
+    reactorRegistry ! Register("system", context.actorOf(SystemReactor.props))
+    reactorRegistry ! Register("jira", context.actorOf(JiraReactor.props))
+    reactorRegistry ! Register("springboot", context.actorOf(SpringBootActuatorReactor.props))
   }
 
   def createAndRegisterInfoReactor: Unit = {
@@ -75,6 +75,6 @@ class Distractor extends Actor with ActorLogging {
       context.system.settings.config.getString("reactor.info.author")
     )
 
-    reactorRegistry ! RegisterMsg("info", context.actorOf(InfoReactor.props(information, transportRegistry, reactorRegistry)))
+    reactorRegistry ! Register("info", context.actorOf(InfoReactor.props(information, transportRegistry, reactorRegistry)))
   }
 }

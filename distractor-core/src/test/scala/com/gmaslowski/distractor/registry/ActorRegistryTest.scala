@@ -2,8 +2,8 @@ package com.gmaslowski.distractor.registry
 
 import akka.actor.{Actor, Props}
 import akka.testkit.{TestActorRef, TestProbe}
-import com.gmaslowski.distractor.core.api.DistractorApi.{RegisterMsg, UnregisterMsg}
-import com.gmaslowski.distractor.registry.ActorRegistry.{GetRegisteredMsg, RegisteredMsg}
+import com.gmaslowski.distractor.core.api.DistractorApi.{Register, Unregister}
+import com.gmaslowski.distractor.registry.ActorRegistry.{GetRegistered, RegisteredActors}
 import com.gmaslowski.distractor.test.common.AkkaActorTest
 
 class ActorRegistryTest extends AkkaActorTest {
@@ -19,22 +19,22 @@ class ActorRegistryTest extends AkkaActorTest {
     "have the possibility to register other actors" in {
 
       // when
-      actor ! RegisterMsg(ACTOR_ID, actorToRegister.ref)
-      actor ! GetRegisteredMsg
+      actor ! Register(ACTOR_ID, actorToRegister.ref)
+      actor ! GetRegistered
 
       // then
-      expectMsg(new RegisteredMsg(List(ACTOR_ID)))
+      expectMsg(new RegisteredActors(List(ACTOR_ID)))
     }
 
     "have the possibility to unregister other actors" in {
 
       // when
-      actor ! RegisterMsg(ACTOR_ID, actorToRegister.ref)
-      actor ! UnregisterMsg(ACTOR_ID)
-      actor ! GetRegisteredMsg
+      actor ! Register(ACTOR_ID, actorToRegister.ref)
+      actor ! Unregister(ACTOR_ID)
+      actor ! GetRegistered
 
       // then
-      expectMsg(new RegisteredMsg(List.empty[String]))
+      expectMsg(new RegisteredActors(List.empty[String]))
     }
   }
 

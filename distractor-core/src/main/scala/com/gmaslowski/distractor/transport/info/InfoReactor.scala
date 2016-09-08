@@ -3,7 +3,7 @@ package com.gmaslowski.distractor.transport.info
 import akka.actor.{Actor, ActorLogging, ActorRef, Props}
 import akka.pattern.Patterns
 import com.gmaslowski.distractor.core.reactor.api.ReactorApi.{ReactorRequest, ReactorResponse}
-import com.gmaslowski.distractor.registry.ActorRegistry.{GetRegisteredMsg, RegisteredMsg}
+import com.gmaslowski.distractor.registry.ActorRegistry.{GetRegistered, RegisteredActors}
 import com.gmaslowski.distractor.transport.info.InfoReactor.Information
 
 import scala.concurrent.Future
@@ -34,8 +34,8 @@ class InfoReactor(val information: Information,
       val requestor = sender()
 
       // todo: reason about spawning stateful actor vs current-future-using solution
-      val transportsFuture: Future[AnyRef] = Patterns.ask(transportRegistry, GetRegisteredMsg, 1 seconds)
-      val reactorsFuture: Future[AnyRef] = Patterns.ask(reactorRegistry, GetRegisteredMsg, 1 seconds)
+      val transportsFuture: Future[AnyRef] = Patterns.ask(transportRegistry, GetRegistered, 1 seconds)
+      val reactorsFuture: Future[AnyRef] = Patterns.ask(reactorRegistry, GetRegistered, 1 seconds)
 
       Future.sequence(List(transportsFuture, reactorsFuture))
         .onComplete {
@@ -47,7 +47,7 @@ class InfoReactor(val information: Information,
             response.foreach(
               x => {
                 responseString = responseString.concat("\ntransports or reactors:\n")
-                x.asInstanceOf[RegisteredMsg].list.foreach(
+                x.asInstanceOf[RegisteredActors].list.foreach(
                   registered => responseString = responseString.concat(s"$registered\n")
                 )
               }

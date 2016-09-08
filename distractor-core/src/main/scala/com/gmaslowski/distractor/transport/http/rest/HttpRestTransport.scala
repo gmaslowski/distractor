@@ -10,7 +10,7 @@ import akka.http.scaladsl.server.Directives._
 import akka.pattern.Patterns.ask
 import akka.stream.ActorMaterializer
 import com.gmaslowski.distractor.core.api.DistractorApi
-import com.gmaslowski.distractor.core.api.DistractorApi.RegisterMsg
+import com.gmaslowski.distractor.core.api.DistractorApi.Register
 import com.gmaslowski.distractor.core.reactor.api.ReactorApi.ReactorResponse
 import com.gmaslowski.distractor.transport.http.rest.HttpRestTransport.{HTTP_PORT, RestCommand}
 import spray.json.DefaultJsonProtocol
@@ -53,7 +53,7 @@ class HttpRestTransport extends Actor with ActorLogging {
   Http(context.system).bindAndHandle(route, "localhost", HTTP_PORT)
 
   override def preStart() {
-    context.actorSelection("akka://distractor/user/distractor/transport-registry") ! RegisterMsg("http-rest", self)
+    context.actorSelection("akka://distractor/user/distractor/transport-registry") ! Register("http-rest", self)
   }
 
   override def receive: Receive = {

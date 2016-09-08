@@ -1,15 +1,13 @@
 package com.gmaslowski.distractor.registry
 
 import akka.actor.{Actor, ActorRef}
-import com.gmaslowski.distractor.core.api.DistractorApi.{RegisterMsg, UnregisterMsg}
-import com.gmaslowski.distractor.registry.ActorRegistry.{GetRegisteredMsg, RegisteredMsg}
+import com.gmaslowski.distractor.core.api.DistractorApi.{Register, Unregister}
+import com.gmaslowski.distractor.registry.ActorRegistry.{GetRegistered, RegisteredActors}
 
 object ActorRegistry {
 
-  case object GetRegisteredMsg
-
-  case class RegisteredMsg(list: List[String])
-
+  case object GetRegistered
+  case class RegisteredActors(list: List[String])
 }
 
 trait ActorRegistry extends Actor {
@@ -17,12 +15,12 @@ trait ActorRegistry extends Actor {
   val registry = collection.mutable.HashMap[String, ActorRef]()
 
   def handleRegistry: Receive = {
-    case RegisterMsg(id, toRegister) =>
+    case Register(id, toRegister) =>
       registry += id -> toRegister
-    case UnregisterMsg(id) =>
+    case Unregister(id) =>
       registry -= id
-    case GetRegisteredMsg =>
-      sender() ! new RegisteredMsg(registry.keys.toList)
+    case GetRegistered =>
+      sender ! RegisteredActors(registry.keys.toList)
   }
 
 }
