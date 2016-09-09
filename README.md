@@ -11,19 +11,16 @@ it entirely in [Scala](http://www.scala-lang.org/) with [Akka](http://akka.io/),
 be easily distributed over network instead of being bound to one JVM.
 
 ### testing
-
-test:
 ```bash
 ./activator clean test
 ```
 
-test with coverage:
+with coverage
 ```bash
 ./activator clean coverage test
 ```
 
 ### run 
-run:
 ```bash
 ./activator run
 ```
