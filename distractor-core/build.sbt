@@ -3,16 +3,11 @@ name := """distractor"""
 val scalatestVersion = "2.2.6"
 val mockitoVersion = "1.10.19"
 val logbackVersion = "1.1.3"
-val akkaVersion = "2.4.6"
+val akkaVersion = "2.4.10"
 
 libraryDependencies ++= Seq(
   // Actor System
   "com.typesafe.akka" %% "akka-actor" % akkaVersion,
-
-  // Akka Http
-  "com.typesafe.akka" %% "akka-http-core" % akkaVersion,
-  "com.typesafe.akka" %% "akka-http-experimental" % akkaVersion,
-  "com.typesafe.akka" %% "akka-http-spray-json-experimental" % akkaVersion,
 
   // Goodies
   "ch.qos.logback" % "logback-classic" % logbackVersion,

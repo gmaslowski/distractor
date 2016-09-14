@@ -16,6 +16,7 @@ lazy val distractor = project.in(file("."))
     distractor_test_common,
 
     distractor_transport_telnet,
+    distractor_transport_http_rest,
 
     distractor_reactor_system,
     distractor_reactor_info,
@@ -41,6 +42,7 @@ lazy val distractor_core = Project(id = "distractor-core", base = file("distract
     distractor_api,
     distractor_test_common,
     distractor_transport_telnet,
+    distractor_transport_http_rest,
     distractor_reactor_system,
     distractor_reactor_jira,
     distractor_reactor_spring_boot_actuator)

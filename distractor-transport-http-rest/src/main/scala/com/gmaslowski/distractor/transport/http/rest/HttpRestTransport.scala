@@ -21,6 +21,7 @@ object HttpRestMarshallers extends DefaultJsonProtocol with SprayJsonSupport {
   implicit val restCommandFormat = jsonFormat1(RestCommand)
 }
 
+
 object HttpRestTransport {
   val HTTP_PORT: Int = 8080
 
@@ -38,7 +39,7 @@ class HttpRestTransport extends Actor with ActorLogging {
   implicit val ec = context.dispatcher
 
   val route =
-    (post & path("rest-api") & entity(as[RestCommand])) { restCommand =>
+    (post & path("command") & entity(as[RestCommand])) { restCommand =>
       complete {
         val future = ask(context.actorSelection("akka://distractor/user/distractor/request-handler"),
           new DistractorApi.DistractorRequest(restCommand.message),
@@ -53,6 +54,7 @@ class HttpRestTransport extends Actor with ActorLogging {
   Http(context.system).bindAndHandle(route, "localhost", HTTP_PORT)
 
   override def preStart() {
+    // todo: fix that; should be provided via props, and not on preStart
     context.actorSelection("akka://distractor/user/distractor/transport-registry") ! Register("http-rest", self)
   }
 
