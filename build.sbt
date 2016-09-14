@@ -79,4 +79,9 @@ lazy val distractor_transport_http_rest = Project(id = "distractor-transport-htt
   .settings(commonSettings: _*)
   .dependsOn(distractor_api, distractor_test_common)
 
+assemblyMergeStrategy in assembly := {
+  case PathList("META-INF", xs @ _*) => MergeStrategy.discard
+  case x => MergeStrategy.first
+}
+
 run in Compile <<= (run in Compile in distractor_core)

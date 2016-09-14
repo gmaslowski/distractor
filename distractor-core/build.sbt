@@ -23,6 +23,12 @@ mainClass in Compile := Some("com.gmaslowski.distractor.core.DistractorBootstrap
 
 enablePlugins(DockerPlugin)
 
+assemblyMergeStrategy in assembly := {
+  case PathList("META-INF", xs @ _*) => MergeStrategy.discard
+  case PathList("reference.conf") => MergeStrategy.concat
+  case x => MergeStrategy.first
+}
+
 // Make the docker task depend on the assembly task, which generates a fat JAR file
 docker <<= (docker dependsOn assembly)
 
