@@ -11,6 +11,7 @@ import com.gmaslowski.distractor.reactor.system.SystemReactor
 import com.gmaslowski.distractor.transport.http.rest.HttpRestTransport
 import com.gmaslowski.distractor.transport.info.InfoReactor
 import com.gmaslowski.distractor.transport.info.InfoReactor.Information
+import com.gmaslowski.distractor.transport.slack.http.SlackHttpTransport
 import com.gmaslowski.distractor.transport.telnet.TelnetTransport
 
 object DistractorBootstrap {
@@ -23,6 +24,7 @@ object DistractorBootstrap {
     // fixme: transports should be distractor-kernel independent
     system.actorOf(TelnetTransport.props, "telnet")
     system.actorOf(HttpRestTransport.props, "http-rest")
+    system.actorOf(SlackHttpTransport.props, "slack-http")
 
     // app terminator
     system.actorOf(Props(classOf[Terminator], distractor), "terminator")

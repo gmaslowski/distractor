@@ -17,6 +17,7 @@ lazy val distractor = project.in(file("."))
 
     distractor_transport_telnet,
     distractor_transport_http_rest,
+    distractor_transport_slack_http,
 
     distractor_reactor_system,
     distractor_reactor_info,
@@ -43,6 +44,7 @@ lazy val distractor_core = Project(id = "distractor-core", base = file("distract
     distractor_test_common,
     distractor_transport_telnet,
     distractor_transport_http_rest,
+    distractor_transport_slack_http,
     distractor_reactor_system,
     distractor_reactor_jira,
     distractor_reactor_spring_boot_actuator)
@@ -75,6 +77,10 @@ lazy val distractor_transport_telnet = Project(id = "distractor-transport-telnet
   .settings(commonSettings: _*)
   .dependsOn(distractor_api, distractor_test_common)
 lazy val distractor_transport_http_rest = Project(id = "distractor-transport-http-rest", base = file("distractor-transport-http-rest"))
+  .settings(libraryDependencies += "com.typesafe.akka" %% "akka-actor" % akkaVersion)
+  .settings(commonSettings: _*)
+  .dependsOn(distractor_api, distractor_test_common)
+lazy val distractor_transport_slack_http = Project(id = "distractor-transport-slack-http", base = file("distractor-transport-slack-http"))
   .settings(libraryDependencies += "com.typesafe.akka" %% "akka-actor" % akkaVersion)
   .settings(commonSettings: _*)
   .dependsOn(distractor_api, distractor_test_common)
