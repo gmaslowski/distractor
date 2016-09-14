@@ -53,9 +53,9 @@ class InfoReactor(val information: Information,
               }
             )
 
-            requestor forward new ReactorResponse(reactorRequest.reactorId, responseString)
+            requestor forward ReactorResponse(reactorRequest.reactorId, responseString)
           case Failure(e) =>
-            requestor forward new ReactorResponse(reactorRequest.reactorId, e.getMessage)
+            requestor forward ReactorResponse(reactorRequest.reactorId, e.getMessage)
         }
 
   }

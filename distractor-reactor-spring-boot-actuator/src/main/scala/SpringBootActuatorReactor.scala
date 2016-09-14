@@ -12,20 +12,28 @@ object SpringBootActuatorReactor {
 
 class SpringBootActuatorReactor extends Actor with ActorLogging {
 
+  val apps: Map[String, String] = sys.env("SPRING_BOOT_ACTUATORS")
+    .split(",")
+    .map(keyVal => (keyVal.split("=")(0), keyVal.split("=")(1)))
+    .toMap
+
   override def receive = {
-    case reactorRequest: ReactorRequest =>
+    case ReactorRequest(reactorId, data) =>
       implicit val mat = ActorMaterializer.apply(ActorMaterializerSettings.create(context.system))
       implicit val ec = context.dispatcher
 
       val client = new AhcWSClient(new AhcConfigBuilder().build())
       val sender = context.sender()
 
+      val appName: String = apps(data.split(" ")(0))
+      val springCommand: String = data.split(" ")(1)
+
       client
-        .url(s"${sys.env("SPRING_BOOT_ACTUATOR_LINK")}/env")
+        .url(s"${appName}/${springCommand}")
         .get()
         .onSuccess {
           case result =>
-            sender forward ReactorResponse(reactorRequest.reactorId, result.body)
+            sender forward ReactorResponse(reactorId, result.body)
             client.close()
         }
   }
