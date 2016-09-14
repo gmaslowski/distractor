@@ -1,7 +1,7 @@
 import sbt.Keys._
 import sbt._
 
-lazy val akkaVersion = "2.4.6"
+lazy val akkaVersion = "2.4.10"
 
 lazy val commonSettings = Seq(
   organization := "com.gmaslowski",
