@@ -10,27 +10,17 @@ Distractor is a continuation of [reactor](https://github.com/FutureProcessing/re
 it entirely in [Scala](http://www.scala-lang.org/) with [Akka](http://akka.io/), so that reactors and transports could 
 be easily distributed over network instead of being bound to one JVM.
 
-## usage
-
-run:
-```bash
-sh sbt-run.sh
-```
-
 ### testing
-
-test:
 ```bash
 ./activator clean test
 ```
 
-test with coverage:
+with coverage
 ```bash
 ./activator clean coverage test
 ```
 
 ### run 
-run:
 ```bash
 ./activator run
 ```
