@@ -39,7 +39,6 @@ object DistractorBootstrap {
         context.system.terminate()
     }
   }
-
 }
 
 object Distractor {
@@ -64,7 +63,9 @@ class Distractor extends Actor with ActorLogging {
 
     createAndRegisterInfoReactor
     // todo: asap find a way of dynamic registering of reactors and transports by using API only
-    reactorRegistry ! Register("system", context.actorOf(SystemReactor.props))
+    if(sys.env("SYSTEM_REACTOR").equals("ON")) {
+      reactorRegistry ! Register("system", context.actorOf(SystemReactor.props))
+    }
     reactorRegistry ! Register("jira", context.actorOf(JiraReactor.props))
     reactorRegistry ! Register("springboot", context.actorOf(SpringBootActuatorReactor.props))
   }
