@@ -5,6 +5,7 @@ import java.util.concurrent.TimeUnit.SECONDS
 import akka.actor.{Actor, ActorLogging, Props}
 import akka.http.scaladsl.Http
 import akka.http.scaladsl.marshalling.ToResponseMarshallable
+import akka.http.scaladsl.model.{ContentType, HttpEntity, HttpResponse, MediaTypes}
 import akka.http.scaladsl.server.Directives._
 import akka.pattern.Patterns.ask
 import akka.stream.ActorMaterializer
@@ -47,7 +48,9 @@ class SlackHttpTransport extends Actor with ActorLogging {
           FiniteDuration.apply(10, SECONDS))
 
         future.map[ToResponseMarshallable] {
-          case ReactorResponse(reactorId, message) => message
+          case ReactorResponse(reactorId, message) => {
+            HttpResponse(entity = HttpEntity(ContentType(MediaTypes.`application/json`), s"""{"response_type": "in_channel", "text": "${message.replaceAll("\"","")}"}"""))
+          }
         }
       }
     }
@@ -63,6 +66,3 @@ class SlackHttpTransport extends Actor with ActorLogging {
     case ReactorResponse(reactorId, message) =>
   }
 }
-
-
-
