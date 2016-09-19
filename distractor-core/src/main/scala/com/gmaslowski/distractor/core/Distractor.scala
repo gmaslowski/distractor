@@ -1,6 +1,7 @@
 package com.gmaslowski.distractor.core
 
 import akka.actor._
+import com.gmaslowski.distractor.core.Distractor.systemReactor
 import com.gmaslowski.distractor.core.api.DistractorApi.Register
 import com.gmaslowski.distractor.core.api.DistractorRequestHandler
 import com.gmaslowski.distractor.core.reactor.ReactorRegistry
@@ -39,9 +40,12 @@ object DistractorBootstrap {
         context.system.terminate()
     }
   }
+
 }
 
 object Distractor {
+  def systemReactor = sys.env.get("SYSTEM_REACTOR").getOrElse("OFF")
+
   def props = Props[Distractor]
 }
 
@@ -62,8 +66,10 @@ class Distractor extends Actor with ActorLogging {
     requestHandler = context.actorOf(DistractorRequestHandler.props(reactorRegistry), "request-handler")
 
     createAndRegisterInfoReactor
+
     // todo: asap find a way of dynamic registering of reactors and transports by using API only
-    if(sys.env("SYSTEM_REACTOR").equals("ON")) {
+
+    if ("ON" equals systemReactor) {
       reactorRegistry ! Register("system", context.actorOf(SystemReactor.props))
     }
     reactorRegistry ! Register("jira", context.actorOf(JiraReactor.props))
