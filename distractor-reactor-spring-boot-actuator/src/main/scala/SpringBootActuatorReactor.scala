@@ -12,6 +12,8 @@ object SpringBootActuatorReactor {
 
 class SpringBootActuatorReactor extends Actor with ActorLogging {
 
+  val listCommand = "list".r
+
   val apps: Map[String, String] = sys.env("SPRING_BOOT_ACTUATORS")
     .split(",")
     .map(keyVal => (keyVal.split("=")(0), keyVal.split("=")(1)))
@@ -19,22 +21,30 @@ class SpringBootActuatorReactor extends Actor with ActorLogging {
 
   override def receive = {
     case ReactorRequest(reactorId, data) =>
-      implicit val mat = ActorMaterializer.apply(ActorMaterializerSettings.create(context.system))
-      implicit val ec = context.dispatcher
 
-      val client = new AhcWSClient(new AhcConfigBuilder().build())
-      val sender = context.sender()
+      data match {
+        case listCommand =>
+          context.sender() forward ReactorResponse(reactorId, apps.mkString("\n"))
 
-      val appName: String = apps(data.split(" ")(0))
-      val springCommand: String = data.split(" ")(1)
+        case _ =>
+          implicit val mat = ActorMaterializer.apply(ActorMaterializerSettings.create(context.system))
+          implicit val ec = context.dispatcher
 
-      client
-        .url(s"${appName}/${springCommand}")
-        .get()
-        .onSuccess {
-          case result =>
-            sender forward ReactorResponse(reactorId, result.body)
-            client.close()
-        }
+          val client = new AhcWSClient(new AhcConfigBuilder().build())
+          val sender = context.sender()
+
+          val appName: String = apps(data.split(" ")(0))
+          val springCommand: String = data.split(" ")(1)
+
+          client
+            .url(s"${appName}/${springCommand}")
+            .get()
+            .onSuccess {
+              case result =>
+                sender forward ReactorResponse(reactorId, result.body)
+                client.close()
+            }
+      }
+
   }
 }
