@@ -20,7 +20,6 @@ lazy val distractor = project.in(file("."))
     distractor_transport_slack_http,
 
     distractor_reactor_system,
-    distractor_reactor_info,
     distractor_reactor_jira,
     distractor_reactor_spring_boot_actuator,
 
@@ -55,9 +54,6 @@ lazy val distractor_dashboard = Project(id = "distractor-dashboard", base = file
   .settings(commonSettings: _*)
 
 // reactors
-lazy val distractor_reactor_info = Project(id = "distractor-reactor-info", base = file("distractor-reactor-info"))
-  .settings(libraryDependencies += "com.typesafe.akka" %% "akka-actor" % akkaVersion)
-  .settings(commonSettings: _*)
 lazy val distractor_reactor_system = Project(id = "distractor-reactor-system", base = file("distractor-reactor-system"))
   .settings(libraryDependencies += "com.typesafe.akka" %% "akka-actor" % akkaVersion)
   .settings(commonSettings: _*)

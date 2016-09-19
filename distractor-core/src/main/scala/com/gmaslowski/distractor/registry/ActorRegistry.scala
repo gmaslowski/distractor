@@ -7,12 +7,14 @@ import com.gmaslowski.distractor.registry.ActorRegistry.{GetRegistered, Register
 object ActorRegistry {
 
   case object GetRegistered
-  case class RegisteredActors(list: List[String])
+  case class RegisteredActors(registryName: String, list: List[String])
 }
 
 trait ActorRegistry extends Actor {
 
   val registry = collection.mutable.HashMap[String, ActorRef]()
+
+  def registryName: String
 
   def handleRegistry: Receive = {
     case Register(id, toRegister) =>
@@ -20,7 +22,7 @@ trait ActorRegistry extends Actor {
     case Unregister(id) =>
       registry -= id
     case GetRegistered =>
-      sender ! RegisteredActors(registry.keys.toList)
+      sender ! RegisteredActors(registryName, registry.keys.toList)
   }
 
 }

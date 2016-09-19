@@ -2,6 +2,9 @@ package com.gmaslowski.distractor.reactor.spring.boot.actuator
 
 import akka.actor.{Actor, ActorLogging, Props}
 import akka.stream.{ActorMaterializer, ActorMaterializerSettings}
+import com.fasterxml.jackson.databind.ObjectMapper
+import com.fasterxml.jackson.module.scala.DefaultScalaModule
+import com.fasterxml.jackson.module.scala.experimental.ScalaObjectMapper
 import com.gmaslowski.distractor.core.reactor.api.ReactorApi.{ReactorRequest, ReactorResponse}
 import play.api.libs.ws.ahc.{AhcConfigBuilder, AhcWSClient}
 
@@ -24,12 +27,18 @@ class SpringBootActuatorReactor extends Actor with ActorLogging {
 
   val client = new AhcWSClient(new AhcConfigBuilder().build())
 
+  val mapper = new ObjectMapper() with ScalaObjectMapper
+  mapper.registerModule(DefaultScalaModule)
+
+  override def postStop = {
+    client.close()
+  }
 
   override def receive = {
     case ReactorRequest(reactorId, data) =>
       data match {
         case listCommand(list) =>
-          context.sender() forward ReactorResponse(reactorId, apps.mkString("\n"))
+          context.sender() forward ReactorResponse(reactorId, mapper.writeValueAsString(apps))
 
         case _ =>
           val sender = context.sender()
@@ -43,8 +52,8 @@ class SpringBootActuatorReactor extends Actor with ActorLogging {
             .onSuccess {
               case result =>
                 sender forward ReactorResponse(reactorId, result.body)
-                client.close()
             }
+
       }
   }
 }

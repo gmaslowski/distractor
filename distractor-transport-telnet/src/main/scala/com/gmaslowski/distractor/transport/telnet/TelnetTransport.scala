@@ -16,6 +16,7 @@ import org.apache.mina.filter.codec.textline.TextLineCodecFactory
 import org.apache.mina.filter.logging.LoggingFilter
 import org.apache.mina.transport.socket.SocketSessionConfig
 import org.apache.mina.transport.socket.nio.NioSocketAcceptor
+import spray.json.JsonParser
 
 import scala.collection.JavaConverters._
 import scala.collection.mutable
@@ -65,6 +66,10 @@ class TelnetTransport extends Actor with ActorLogging {
       val sessions: mutable.Map[Long, IoSession] = acceptor.getManagedSessions.asScala.seq
 
       // todo: write response
-      sessions.foreach(entry => entry._2.write(message))
+      sessions.foreach(entry => entry._2.write(prettyJson(message)))
+  }
+
+  def prettyJson(json: String): String = {
+    JsonParser(json).prettyPrint
   }
 }

@@ -12,6 +12,7 @@ libraryDependencies ++= Seq(
   // Goodies
   "ch.qos.logback" % "logback-classic" % logbackVersion,
   "com.typesafe.akka" %% "akka-slf4j" % akkaVersion,
+  "com.fasterxml.jackson.module" %% "jackson-module-scala" % "2.8.2",
 
   // Testing Frameworks
   "com.typesafe.akka" %% "akka-testkit" % akkaVersion % "test",

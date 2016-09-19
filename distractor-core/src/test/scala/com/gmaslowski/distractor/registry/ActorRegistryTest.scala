@@ -23,7 +23,7 @@ class ActorRegistryTest extends AkkaActorTest {
       actor ! GetRegistered
 
       // then
-      expectMsg(new RegisteredActors(List(ACTOR_ID)))
+      expectMsg(RegisteredActors("abstract", List(ACTOR_ID)))
     }
 
     "have the possibility to unregister other actors" in {
@@ -34,7 +34,7 @@ class ActorRegistryTest extends AkkaActorTest {
       actor ! GetRegistered
 
       // then
-      expectMsg(new RegisteredActors(List.empty[String]))
+      expectMsg(RegisteredActors("abstract", List.empty[String]))
     }
   }
 
@@ -42,4 +42,6 @@ class ActorRegistryTest extends AkkaActorTest {
 
 class WithActorRegistry extends Actor with ActorRegistry {
   override def receive = handleRegistry
+
+  override def registryName: String = "abstract"
 }

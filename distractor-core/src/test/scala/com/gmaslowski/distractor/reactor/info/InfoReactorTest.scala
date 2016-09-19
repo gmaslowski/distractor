@@ -1,9 +1,7 @@
 package com.gmaslowski.distractor.reactor.info
 
 import akka.testkit.{TestActorRef, TestProbe}
-import com.gmaslowski.distractor.core.reactor.api.ReactorApi
 import com.gmaslowski.distractor.core.reactor.api.ReactorApi.{ReactorRequest, ReactorResponse}
-import com.gmaslowski.distractor.registry.ActorRegistry
 import com.gmaslowski.distractor.registry.ActorRegistry.{GetRegistered, RegisteredActors}
 import com.gmaslowski.distractor.test.common.AkkaActorTest
 import com.gmaslowski.distractor.transport.info.InfoReactor
@@ -27,11 +25,11 @@ class InfoReactorTest extends AkkaActorTest {
 
       reactorRegistry.expectMsg(GetRegistered)
       transportRegistry.expectMsg(GetRegistered)
-      reactorRegistry.reply(RegisteredActors(List("info", "system")))
-      transportRegistry.reply(RegisteredActors(List("telnet", "skype")))
+      reactorRegistry.reply(RegisteredActors("reactors", List("info", "system")))
+      transportRegistry.reply(RegisteredActors("transports", List("telnet", "skype")))
 
       // then
-      expectMsg(ReactorResponse("info", s"$expectedInformation\ntransports or reactors:\ntelnet\nskype\n\ntransports or reactors:\ninfo\nsystem\n"))
+      expectMsg(ReactorResponse("info", "{\"appName\":\"name\",\"author\":\"author\",\"transports\":[\"telnet\",\"skype\"],\"reactors\":[\"info\",\"system\"],\"version\":\"version\"}"))
     }
   }
 }

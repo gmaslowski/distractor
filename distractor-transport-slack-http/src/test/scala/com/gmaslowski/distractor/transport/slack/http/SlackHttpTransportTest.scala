@@ -13,10 +13,23 @@ class SlackHttpTransportTest extends AkkaActorTest {
       val slackCommand = "one=two&two=three&text=1+2+3"
 
       // when
-      val respone = makeDistractorCommand(slackCommand)
+      val response = makeDistractorCommand(slackCommand)
 
       // then
-      assert(respone equals "/1 2 3")
+      assert(response equals "/1 2 3")
+    }
+
+    "provide distractor command with decoded url parts" in {
+
+      // given
+      val slackCommand = "text=springboot+ipmp-test+metrics%2Fmem.free"
+
+      // when
+      val response = makeDistractorCommand(slackCommand)
+
+      // then
+      println(response)
+      assert(response equals "/springboot ipmp-test metrics/mem.free")
     }
   }
 }

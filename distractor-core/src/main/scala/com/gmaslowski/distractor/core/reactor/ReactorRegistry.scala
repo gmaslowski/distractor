@@ -19,4 +19,5 @@ class ReactorRegistry extends Actor with ActorLogging with ActorRegistry {
       registry.get(reactorRequest.reactorId) getOrElse context.system.deadLetters forward reactorRequest
   }
 
+  override def registryName: String = "reactors"
 }
