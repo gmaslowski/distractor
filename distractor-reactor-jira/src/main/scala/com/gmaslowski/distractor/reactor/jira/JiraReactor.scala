@@ -9,28 +9,47 @@ import play.api.libs.ws.ahc.{AhcConfigBuilder, AhcWSClient}
 object JiraReactor {
 
   def props = Props[JiraReactor]
+
 }
 
 class JiraReactor extends Actor with ActorLogging {
+  implicit val mat = ActorMaterializer.apply(ActorMaterializerSettings.create(context.system))
+  implicit val ec = context.dispatcher
+
+  val issueCommand = "([A-Z]+-[0-9]+)".r
+  val jqlCommand = "jql=(.+)".r
+
+  val client = new AhcWSClient(new AhcConfigBuilder().build())
 
   override def receive = {
+
     case reactorRequest: ReactorRequest =>
-      implicit val mat = ActorMaterializer.apply(ActorMaterializerSettings.create(context.system))
-      implicit val ec = context.dispatcher
 
-      val issueNumber = reactorRequest.data
-
-      val client = new AhcWSClient(new AhcConfigBuilder().build())
       val sender = context.sender()
 
-      client
-        .url(s"${sys.env("JIRA_LINK")}/rest/api/2/issue/$issueNumber")
-        .withAuth(sys.env("JIRA_USER"), sys.env("JIRA_PASS"), BASIC)
-        .get()
+      val url = reactorRequest.data match {
+        case issueCommand(issueNumber) =>
+          s"${sys.env("JIRA_LINK")}/rest/api/2/issue/$issueNumber?fields=key,summary"
+
+        case jqlCommand(jql) =>
+          s"${sys.env("JIRA_LINK")}/rest/api/2/search?fields=key,summary&jql=$jql"
+      }
+
+      issueJiraRequest(url)
         .onSuccess {
           case result =>
             sender forward ReactorResponse(reactorRequest.reactorId, result.body)
-            client.close()
         }
   }
+
+  def issueJiraRequest(url: String) =
+    client
+      .url(url)
+      .withAuth(sys.env("JIRA_USER"), sys.env("JIRA_PASS"), BASIC)
+      .get()
+
+  override def postStop: Unit = {
+    client.close()
+  }
+
 }

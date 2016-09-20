@@ -45,6 +45,7 @@ class TelnetTransport extends Actor with ActorLogging {
     // fixme: think on API and how to communicate reactors with the kernel
     context.actorSelection("akka://distractor/user/distractor/transport-registry") ! Register("telnet", self)
     acceptor.setHandler(new TelnetHandler(log, context.actorSelection("akka://distractor/user/distractor/request-handler"), self))
+    acceptor.setReuseAddress(true)
 
     // fixme: use future for that; or a spawned actor
     acceptor.bind(new InetSocketAddress(TELNET_PORT))
@@ -59,6 +60,8 @@ class TelnetTransport extends Actor with ActorLogging {
     acceptor.dispose()
     acceptor.unbind()
     acceptor = null
+
+    acceptor.getManagedSessions.asScala.foreach(entry => entry._2.close(true))
   }
 
   override def receive: Receive = {
