@@ -2,15 +2,15 @@ package com.gmaslowski.distractor.transport.slack.http
 
 import akka.actor.{Actor, ActorLogging, Props}
 import akka.http.scaladsl.Http
-import akka.http.scaladsl.marshalling.ToResponseMarshallable
 import akka.http.scaladsl.model.{ContentType, HttpEntity, HttpResponse, MediaTypes}
 import akka.http.scaladsl.server.Directives._
 import akka.pattern.Patterns.ask
 import akka.stream.ActorMaterializer
 import com.gmaslowski.distractor.core.api.DistractorApi.{DistractorRequest, Register}
 import com.gmaslowski.distractor.core.reactor.api.ReactorApi.ReactorResponse
-import com.gmaslowski.distractor.transport.slack.http.SlackHttpTransport.{HTTP_PORT, makeDistractorCommand}
+import com.gmaslowski.distractor.transport.slack.http.SlackHttpTransport.{HTTP_PORT, makeDistractorCommand, makeResponseUrl}
 import org.apache.commons.codec.net.URLCodec.decodeUrl
+import play.api.libs.ws.ahc.{AhcConfigBuilder, AhcWSClient}
 import spray.json.JsonParser
 
 object SlackHttpTransport {
@@ -27,6 +27,11 @@ object SlackHttpTransport {
     "/" + new String(decodeUrl(command.getBytes))
   }
 
+  def makeResponseUrl(slackCommand: String): String =
+    new String(decodeUrl(slackCommand.split("&")
+      .map(keyVal => (keyVal.split("=")(0), keyVal.split("=")(1)))
+      .toMap
+      .apply("response_url").getBytes))
 
 }
 
@@ -36,20 +41,25 @@ class SlackHttpTransport extends Actor with ActorLogging {
 
   implicit val materializer = ActorMaterializer()
   implicit val ec = context.dispatcher
+  val client = new AhcWSClient(new AhcConfigBuilder().build())
 
   val route =
-    (post & path("command") & entity(as[String])) { slackCommand =>
+    (post & path("command") & entity(as[String])) { slackMessageBody =>
       complete {
 
-        val command: String = makeDistractorCommand(slackCommand)
+        val command = makeDistractorCommand(slackMessageBody)
+        val responseUrl = makeResponseUrl(slackMessageBody)
 
-        val future = ask(context.actorSelection("akka://distractor/user/distractor/request-handler"), DistractorRequest(command), 10.seconds)
+        ask(context.actorSelection("akka://distractor/user/distractor/request-handler"), DistractorRequest(command), 10 seconds)
+          .onSuccess({
+            case ReactorResponse(reactorId, message) => {
+              client
+                .url(responseUrl)
+                .post(s"""{"response_type": "in_channel", "text": "```${formatMessage(message)}```"}""")
+            }
+          })
 
-        future.map[ToResponseMarshallable] {
-          case ReactorResponse(reactorId, message) => {
-            HttpResponse(entity = HttpEntity(ContentType(MediaTypes.`application/json`), s"""{"response_type": "in_channel", "text": "```${formatMessage(message)}```"}"""))
-          }
-        }
+        HttpResponse(200, entity = HttpEntity(ContentType(MediaTypes.`application/json`),s"""{\"response_type\": \"in_channel\"}"""))
       }
     }
 

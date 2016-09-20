@@ -12,5 +12,6 @@ libraryDependencies ++= Seq(
 
   // misc
   "commons-codec" % "commons-codec" % "1.10",
-  "com.fasterxml.jackson.module" %% "jackson-module-scala" % "2.8.2"
+  "com.fasterxml.jackson.module" %% "jackson-module-scala" % "2.8.2",
+  "com.typesafe.play" %% "play-ws" % "2.5.4"
 )
