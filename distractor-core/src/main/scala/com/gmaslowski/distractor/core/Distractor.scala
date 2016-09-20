@@ -6,6 +6,7 @@ import com.gmaslowski.distractor.core.api.DistractorApi.Register
 import com.gmaslowski.distractor.core.api.DistractorRequestHandler
 import com.gmaslowski.distractor.core.reactor.ReactorRegistry
 import com.gmaslowski.distractor.core.transport.TransportRegistry
+import com.gmaslowski.distractor.reactor.foaas.FoaasReactor
 import com.gmaslowski.distractor.reactor.jira.JiraReactor
 import com.gmaslowski.distractor.reactor.spring.boot.actuator.SpringBootActuatorReactor
 import com.gmaslowski.distractor.reactor.system.SystemReactor
@@ -74,6 +75,7 @@ class Distractor extends Actor with ActorLogging {
     }
     reactorRegistry ! Register("jira", context.actorOf(JiraReactor.props))
     reactorRegistry ! Register("springboot", context.actorOf(SpringBootActuatorReactor.props))
+    reactorRegistry ! Register("foaas", context.actorOf(FoaasReactor.props))
   }
 
   def createAndRegisterInfoReactor: Unit = {

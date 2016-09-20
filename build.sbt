@@ -21,6 +21,7 @@ lazy val distractor = project.in(file("."))
 
     distractor_reactor_system,
     distractor_reactor_jira,
+    distractor_reactor_foaas,
     distractor_reactor_spring_boot_actuator,
 
     distractor_core
@@ -46,6 +47,7 @@ lazy val distractor_core = Project(id = "distractor-core", base = file("distract
     distractor_transport_slack_http,
     distractor_reactor_system,
     distractor_reactor_jira,
+    distractor_reactor_foaas,
     distractor_reactor_spring_boot_actuator)
   .settings(mainClass in(Compile, run) := Some("com.gmaslowski.distractor.core.DistractorBootstrap"))
 
@@ -63,6 +65,10 @@ lazy val distractor_reactor_spring_boot_actuator = Project(id = "distractor-reac
   .settings(commonSettings: _*)
   .dependsOn(distractor_api)
 lazy val distractor_reactor_jira = Project(id = "distractor-reactor-jira", base = file("distractor-reactor-jira"))
+  .settings(libraryDependencies += "com.typesafe.akka" %% "akka-actor" % akkaVersion)
+  .settings(commonSettings: _*)
+  .dependsOn(distractor_api)
+lazy val distractor_reactor_foaas = Project(id = "distractor-reactor-foaas", base = file("distractor-reactor-foaas"))
   .settings(libraryDependencies += "com.typesafe.akka" %% "akka-actor" % akkaVersion)
   .settings(commonSettings: _*)
   .dependsOn(distractor_api)

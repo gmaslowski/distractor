@@ -55,6 +55,7 @@ class SlackHttpTransport extends Actor with ActorLogging {
             case ReactorResponse(reactorId, message) => {
               client
                 .url(responseUrl)
+                .withHeaders("Accept" -> "application/json")
                 .post(s"""{"response_type": "in_channel", "text": "```${formatMessage(message)}```"}""")
             }
           })
