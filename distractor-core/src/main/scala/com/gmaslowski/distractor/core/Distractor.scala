@@ -1,6 +1,10 @@
 package com.gmaslowski.distractor.core
 
 import akka.actor._
+import akka.stream.{ActorMaterializer, ActorMaterializerSettings}
+import com.fasterxml.jackson.databind.ObjectMapper
+import com.fasterxml.jackson.module.scala.DefaultScalaModule
+import com.fasterxml.jackson.module.scala.experimental.ScalaObjectMapper
 import com.gmaslowski.distractor.core.Distractor.systemReactor
 import com.gmaslowski.distractor.core.api.DistractorApi.Register
 import com.gmaslowski.distractor.core.api.DistractorRequestHandler
@@ -15,6 +19,7 @@ import com.gmaslowski.distractor.transport.info.InfoReactor
 import com.gmaslowski.distractor.transport.info.InfoReactor.Information
 import com.gmaslowski.distractor.transport.slack.http.SlackHttpTransport
 import com.gmaslowski.distractor.transport.telnet.TelnetTransport
+import play.api.libs.ws.ahc.{AhcConfigBuilder, AhcWSClient}
 
 object DistractorBootstrap {
 
@@ -62,6 +67,13 @@ class Distractor extends Actor with ActorLogging {
 
   override def preStart() = {
 
+    implicit val mat = ActorMaterializer.apply(ActorMaterializerSettings.create(context.system))
+    val ahcWsClient = new AhcWSClient(new AhcConfigBuilder().build())
+
+    val mapper = new ObjectMapper() with ScalaObjectMapper
+    mapper.registerModule(DefaultScalaModule)
+
+
     transportRegistry = context.actorOf(TransportRegistry.props, "transport-registry")
     reactorRegistry = context.actorOf(ReactorRegistry.props, "reactor-registry")
     requestHandler = context.actorOf(DistractorRequestHandler.props(reactorRegistry), "request-handler")
@@ -73,9 +85,9 @@ class Distractor extends Actor with ActorLogging {
     if ("ON" equals systemReactor) {
       reactorRegistry ! Register("system", context.actorOf(SystemReactor.props))
     }
-    reactorRegistry ! Register("jira", context.actorOf(JiraReactor.props))
-    reactorRegistry ! Register("springboot", context.actorOf(SpringBootActuatorReactor.props))
-    reactorRegistry ! Register("foaas", context.actorOf(FoaasReactor.props))
+    reactorRegistry ! Register("jira", context.actorOf(JiraReactor.props(ahcWsClient)))
+    reactorRegistry ! Register("springboot", context.actorOf(SpringBootActuatorReactor.props(ahcWsClient, mapper)))
+    reactorRegistry ! Register("foaas", context.actorOf(FoaasReactor.props(ahcWsClient)))
   }
 
   def createAndRegisterInfoReactor: Unit = {

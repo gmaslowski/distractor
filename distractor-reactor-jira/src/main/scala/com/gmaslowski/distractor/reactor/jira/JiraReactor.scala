@@ -1,25 +1,21 @@
 package com.gmaslowski.distractor.reactor.jira
 
 import akka.actor.{Actor, ActorLogging, Props}
-import akka.stream.{ActorMaterializer, ActorMaterializerSettings}
 import com.gmaslowski.distractor.core.reactor.api.ReactorApi.{ReactorRequest, ReactorResponse}
 import play.api.libs.ws.WSAuthScheme.BASIC
-import play.api.libs.ws.ahc.{AhcConfigBuilder, AhcWSClient}
+import play.api.libs.ws.ahc.AhcWSClient
 
 object JiraReactor {
 
-  def props = Props[JiraReactor]
+  def props(ahcWsClient: AhcWSClient) = Props(classOf[JiraReactor], ahcWsClient)
 
 }
 
-class JiraReactor extends Actor with ActorLogging {
-  implicit val mat = ActorMaterializer.apply(ActorMaterializerSettings.create(context.system))
+class JiraReactor(val ahcWsClient: AhcWSClient) extends Actor with ActorLogging {
   implicit val ec = context.dispatcher
 
   val issueCommand = "([A-Z]+-[0-9]+)".r
   val jqlCommand = "jql=(.+)".r
-
-  val client = new AhcWSClient(new AhcConfigBuilder().build())
 
   override def receive = {
 
@@ -43,13 +39,8 @@ class JiraReactor extends Actor with ActorLogging {
   }
 
   def issueJiraRequest(url: String) =
-    client
+    ahcWsClient
       .url(url)
       .withAuth(sys.env("JIRA_USER"), sys.env("JIRA_PASS"), BASIC)
       .get()
-
-  override def postStop: Unit = {
-    client.close()
-  }
-
 }

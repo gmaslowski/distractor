@@ -71,7 +71,9 @@ lazy val distractor_reactor_jira = Project(id = "distractor-reactor-jira", base 
 lazy val distractor_reactor_foaas = Project(id = "distractor-reactor-foaas", base = file("distractor-reactor-foaas"))
   .settings(libraryDependencies += "com.typesafe.akka" %% "akka-actor" % akkaVersion)
   .settings(commonSettings: _*)
-  .dependsOn(distractor_api)
+  .dependsOn(
+    distractor_api,
+    distractor_test_common)
 
 // transports
 lazy val distractor_transport_telnet = Project(id = "distractor-transport-telnet", base = file("distractor-transport-telnet"))
@@ -88,7 +90,7 @@ lazy val distractor_transport_slack_http = Project(id = "distractor-transport-sl
   .dependsOn(distractor_api, distractor_test_common)
 
 assemblyMergeStrategy in assembly := {
-  case PathList("META-INF", xs @ _*) => MergeStrategy.discard
+  case PathList("META-INF", xs@_*) => MergeStrategy.discard
   case x => MergeStrategy.first
 }
 

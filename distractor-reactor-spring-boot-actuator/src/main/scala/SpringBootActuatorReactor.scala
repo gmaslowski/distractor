@@ -1,38 +1,25 @@
 package com.gmaslowski.distractor.reactor.spring.boot.actuator
 
 import akka.actor.{Actor, ActorLogging, Props}
-import akka.stream.{ActorMaterializer, ActorMaterializerSettings}
 import com.fasterxml.jackson.databind.ObjectMapper
-import com.fasterxml.jackson.module.scala.DefaultScalaModule
-import com.fasterxml.jackson.module.scala.experimental.ScalaObjectMapper
 import com.gmaslowski.distractor.core.reactor.api.ReactorApi.{ReactorRequest, ReactorResponse}
-import play.api.libs.ws.ahc.{AhcConfigBuilder, AhcWSClient}
+import play.api.libs.ws.ahc.AhcWSClient
 
 object SpringBootActuatorReactor {
 
-  def props = Props[SpringBootActuatorReactor]
+  def props(ahcWSClient: AhcWSClient, mapper: ObjectMapper) = Props(classOf[SpringBootActuatorReactor], ahcWSClient, mapper)
 }
 
-class SpringBootActuatorReactor extends Actor with ActorLogging {
+class SpringBootActuatorReactor(val client: AhcWSClient, val mapper: ObjectMapper) extends Actor with ActorLogging {
 
-  implicit val mat = ActorMaterializer.apply(ActorMaterializerSettings.create(context.system))
   implicit val ec = context.dispatcher
 
   val listCommand = "(list)".r
 
-  val apps: Map[String, String] = sys.env("SPRING_BOOT_ACTUATORS")
+  val apps: Map[String, String] = sys.env.get("SPRING_BOOT_ACTUATORS").getOrElse("")
     .split(",")
     .map(keyVal => (keyVal.split("=")(0), keyVal.split("=")(1)))
     .toMap
-
-  val client = new AhcWSClient(new AhcConfigBuilder().build())
-
-  val mapper = new ObjectMapper() with ScalaObjectMapper
-  mapper.registerModule(DefaultScalaModule)
-
-  override def postStop = {
-    client.close()
-  }
 
   override def receive = {
     case ReactorRequest(reactorId, data) =>
@@ -53,7 +40,6 @@ class SpringBootActuatorReactor extends Actor with ActorLogging {
               case result =>
                 sender forward ReactorResponse(reactorId, result.body)
             }
-
       }
   }
 }
