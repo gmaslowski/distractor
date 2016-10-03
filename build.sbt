@@ -67,7 +67,9 @@ lazy val distractor_reactor_spring_boot_actuator = Project(id = "distractor-reac
 lazy val distractor_reactor_jira = Project(id = "distractor-reactor-jira", base = file("distractor-reactor-jira"))
   .settings(libraryDependencies += "com.typesafe.akka" %% "akka-actor" % akkaVersion)
   .settings(commonSettings: _*)
-  .dependsOn(distractor_api)
+  .dependsOn(
+    distractor_api,
+    distractor_test_common)
 lazy val distractor_reactor_foaas = Project(id = "distractor-reactor-foaas", base = file("distractor-reactor-foaas"))
   .settings(libraryDependencies += "com.typesafe.akka" %% "akka-actor" % akkaVersion)
   .settings(commonSettings: _*)
