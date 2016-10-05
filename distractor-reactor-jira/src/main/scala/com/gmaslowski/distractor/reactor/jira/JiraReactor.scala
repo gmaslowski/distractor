@@ -8,7 +8,6 @@ import play.api.libs.ws.ahc.AhcWSClient
 object JiraReactor {
 
   def props(ahcWsClient: AhcWSClient) = Props(classOf[JiraReactor], ahcWsClient)
-
 }
 
 class JiraReactor(val ahcWsClient: AhcWSClient) extends Actor with ActorLogging {
