@@ -28,11 +28,6 @@ object DistractorBootstrap {
 
     val distractor = system.actorOf(Props[Distractor], "distractor")
 
-    // fixme: transports should be distractor-kernel independent
-    system.actorOf(TelnetTransport.props, "telnet")
-    system.actorOf(HttpRestTransport.props, "http-rest")
-    system.actorOf(SlackHttpTransport.props, "slack-http")
-
     // app terminator
     system.actorOf(Props(classOf[Terminator], distractor), "terminator")
   }
@@ -88,6 +83,11 @@ class Distractor extends Actor with ActorLogging {
     reactorRegistry ! Register("jira", context.actorOf(JiraReactor.props(ahcWsClient)))
     reactorRegistry ! Register("springboot", context.actorOf(SpringBootActuatorReactor.props(ahcWsClient, mapper)))
     reactorRegistry ! Register("foaas", context.actorOf(FoaasReactor.props(ahcWsClient)))
+
+    // fixme: transports should be distractor-kernel independent
+    context.actorOf(TelnetTransport.props, "telnet")
+    context.actorOf(HttpRestTransport.props, "http-rest")
+    context.actorOf(SlackHttpTransport.props, "slack-http")
   }
 
   def createAndRegisterInfoReactor: Unit = {

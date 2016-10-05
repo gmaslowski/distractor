@@ -1,7 +1,5 @@
 package com.gmaslowski.distractor.transport.http.rest
 
-import java.util.concurrent.TimeUnit.SECONDS
-
 import akka.actor.{Actor, ActorLogging, Props}
 import akka.http.scaladsl.Http
 import akka.http.scaladsl.marshallers.sprayjson.SprayJsonSupport
@@ -14,8 +12,6 @@ import com.gmaslowski.distractor.core.api.DistractorApi.Register
 import com.gmaslowski.distractor.core.reactor.api.ReactorApi.ReactorResponse
 import com.gmaslowski.distractor.transport.http.rest.HttpRestTransport.{HTTP_PORT, RestCommand}
 import spray.json.DefaultJsonProtocol
-
-import scala.concurrent.duration.FiniteDuration
 
 object HttpRestMarshallers extends DefaultJsonProtocol with SprayJsonSupport {
   implicit val restCommandFormat = jsonFormat1(RestCommand)
@@ -35,6 +31,8 @@ class HttpRestTransport extends Actor with ActorLogging {
 
   import HttpRestMarshallers._
 
+  import scala.concurrent.duration._
+
   implicit val materializer = ActorMaterializer()
   implicit val ec = context.dispatcher
 
@@ -42,11 +40,11 @@ class HttpRestTransport extends Actor with ActorLogging {
     (post & path("command") & entity(as[RestCommand])) { restCommand =>
       complete {
         val future = ask(context.actorSelection("akka://distractor/user/distractor/request-handler"),
-          new DistractorApi.DistractorRequest(restCommand.message),
-          FiniteDuration.apply(10, SECONDS))
+          DistractorApi.DistractorRequest(restCommand.message),
+          10 seconds)
 
         future.map[ToResponseMarshallable] {
-          case ReactorResponse(reactorId, message) => message
+          case ReactorResponse(reactorId, message, passThrough) => message
         }
       }
     }
@@ -59,7 +57,7 @@ class HttpRestTransport extends Actor with ActorLogging {
   }
 
   override def receive: Receive = {
-    case ReactorResponse(reactorId, message) =>
+    case ReactorResponse(reactorId, message, passThrough) =>
   }
 }
 

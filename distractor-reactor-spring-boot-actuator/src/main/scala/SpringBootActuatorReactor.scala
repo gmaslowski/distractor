@@ -22,7 +22,7 @@ class SpringBootActuatorReactor(val client: AhcWSClient, val mapper: ObjectMappe
     .toMap
 
   override def receive = {
-    case ReactorRequest(reactorId, data) =>
+    case ReactorRequest(reactorId, data, passThrough) =>
       data match {
         case listCommand(list) =>
           context.sender() forward ReactorResponse(reactorId, mapper.writeValueAsString(apps))

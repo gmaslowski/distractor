@@ -24,6 +24,6 @@ class DistractorRequestHandler(val reactorRegistry: ActorRef) extends Actor with
 
     case distractorRequest: DistractorRequest =>
       val (reactorId: String, data: String) = extractReactorAndCommandFrom(distractorRequest.command)
-      reactorRegistry forward new ReactorRequest(reactorId, data)
+      reactorRegistry forward ReactorRequest(reactorId, data, distractorRequest.passThrough)
   }
 }

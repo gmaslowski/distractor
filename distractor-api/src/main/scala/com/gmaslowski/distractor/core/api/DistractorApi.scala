@@ -4,7 +4,7 @@ import akka.actor.ActorRef
 
 object DistractorApi {
 
-  case class DistractorRequest(command: String)
+  case class DistractorRequest(command: String, passThrough: String = null)
   case class DistractorResponse(message: String)
 
   case class Register(id: String, toRegister: ActorRef)

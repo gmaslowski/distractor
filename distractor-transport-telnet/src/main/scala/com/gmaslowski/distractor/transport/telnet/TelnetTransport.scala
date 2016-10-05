@@ -65,7 +65,7 @@ class TelnetTransport extends Actor with ActorLogging {
   }
 
   override def receive: Receive = {
-    case ReactorResponse(reactorId, message) =>
+    case ReactorResponse(reactorId, message, passThrough) =>
       val sessions: mutable.Map[Long, IoSession] = acceptor.getManagedSessions.asScala.seq
 
       // todo: write response
