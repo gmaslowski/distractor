@@ -73,6 +73,10 @@ class TelnetTransport extends Actor with ActorLogging {
   }
 
   def prettyJson(json: String): String = {
-    JsonParser(json).prettyPrint
+    try {
+      JsonParser(json).prettyPrint
+    } catch {
+      case exc: Exception => json
+    }
   }
 }

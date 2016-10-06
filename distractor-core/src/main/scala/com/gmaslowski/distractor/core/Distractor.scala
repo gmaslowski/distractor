@@ -10,6 +10,7 @@ import com.gmaslowski.distractor.core.api.DistractorApi.Register
 import com.gmaslowski.distractor.core.api.DistractorRequestHandler
 import com.gmaslowski.distractor.core.reactor.ReactorRegistry
 import com.gmaslowski.distractor.core.transport.TransportRegistry
+import com.gmaslowski.distractor.reactor.docker.DockerReactor
 import com.gmaslowski.distractor.reactor.foaas.FoaasReactor
 import com.gmaslowski.distractor.reactor.jira.JiraReactor
 import com.gmaslowski.distractor.reactor.spring.boot.actuator.SpringBootActuatorReactor
@@ -68,9 +69,8 @@ class Distractor extends Actor with ActorLogging {
     val mapper = new ObjectMapper() with ScalaObjectMapper
     mapper.registerModule(DefaultScalaModule)
 
-
-    transportRegistry = context.actorOf(TransportRegistry.props, "transport-registry")
-    reactorRegistry = context.actorOf(ReactorRegistry.props, "reactor-registry")
+    transportRegistry = context.system.actorOf(TransportRegistry.props, "transport-registry")
+    reactorRegistry = context.system.actorOf(ReactorRegistry.props, "reactor-registry")
     requestHandler = context.actorOf(DistractorRequestHandler.props(reactorRegistry), "request-handler")
 
     createAndRegisterInfoReactor
@@ -84,6 +84,8 @@ class Distractor extends Actor with ActorLogging {
     reactorRegistry ! Register("springboot", context.actorOf(SpringBootActuatorReactor.props(ahcWsClient, mapper)))
     reactorRegistry ! Register("foaas", context.actorOf(FoaasReactor.props(ahcWsClient)))
 
+    DockerReactor.startDockerReactor()
+
     // fixme: transports should be distractor-kernel independent
     context.actorOf(TelnetTransport.props, "telnet")
     context.actorOf(HttpRestTransport.props, "http-rest")
@@ -92,7 +94,7 @@ class Distractor extends Actor with ActorLogging {
 
   def createAndRegisterInfoReactor: Unit = {
 
-    val information: Information = new Information(
+    val information: Information = Information(
       context.system.settings.config.getString("reactor.info.appName"),
       context.system.settings.config.getString("reactor.info.version"),
       context.system.settings.config.getString("reactor.info.author")

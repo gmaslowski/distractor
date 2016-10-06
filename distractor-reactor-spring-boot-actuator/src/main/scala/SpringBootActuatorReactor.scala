@@ -16,7 +16,7 @@ class SpringBootActuatorReactor(val client: AhcWSClient, val mapper: ObjectMappe
 
   val listCommand = "(list)".r
 
-  val apps: Map[String, String] = sys.env.get("SPRING_BOOT_ACTUATORS").getOrElse("")
+  val apps: Map[String, String] = sys.env.get("SPRING_BOOT_ACTUATORS").getOrElse("dummy=http://example.com")
     .split(",")
     .map(keyVal => (keyVal.split("=")(0), keyVal.split("=")(1)))
     .toMap
