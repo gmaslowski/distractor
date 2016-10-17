@@ -15,6 +15,7 @@ import com.gmaslowski.distractor.reactor.foaas.FoaasReactor
 import com.gmaslowski.distractor.reactor.jira.JiraReactor
 import com.gmaslowski.distractor.reactor.spring.boot.actuator.SpringBootActuatorReactor
 import com.gmaslowski.distractor.reactor.system.SystemReactor
+import com.gmaslowski.distractor.reactor.weather.WeatherReactor
 import com.gmaslowski.distractor.transport.http.rest.HttpRestTransport
 import com.gmaslowski.distractor.transport.info.InfoReactor
 import com.gmaslowski.distractor.transport.info.InfoReactor.Information
@@ -85,6 +86,7 @@ class Distractor extends Actor with ActorLogging {
     reactorRegistry ! Register("foaas", context.actorOf(FoaasReactor.props(ahcWsClient)))
 
     DockerReactor.startDockerReactor()
+    WeatherReactor.start()
 
     // fixme: transports should be distractor-kernel independent
     context.actorOf(TelnetTransport.props, "telnet")
