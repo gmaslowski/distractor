@@ -1,27 +1,23 @@
 package com.gmaslowski.distractor.reactor.weather
 
-import java.nio.charset.StandardCharsets.UTF_8
-
-import akka.actor.{Actor, ActorLogging, ActorSystem, Props}
-import akka.http.scaladsl.Http
-import akka.http.scaladsl.model.HttpRequest
-import akka.pattern.pipe
+import akka.actor.{Actor, ActorLogging, Props}
 import akka.stream.{ActorMaterializer, ActorMaterializerSettings}
-import akka.util.ByteString
-import com.gmaslowski.distractor.core.api.DistractorApi.Register
 import com.gmaslowski.distractor.core.reactor.api.ReactorApi.{ReactorRequest, ReactorResponse}
-import com.typesafe.config.ConfigFactory.load
+import play.api.libs.ws.ahc.AhcWSClient
 
-class WeatherReactor extends Actor with ActorLogging {
-  import context.dispatcher
+object WeatherReactor {
+  def props(ahcWSClient: AhcWSClient) = Props(classOf[WeatherReactor], ahcWSClient)
+}
+
+class WeatherReactor(val ahcWsClient: AhcWSClient) extends Actor with ActorLogging {
 
   val apiKey = "292d703e8a9dd6b9d3c45d33c8eb54c2"
   val defaultCountryCode = "pl"
-  val weatherUrlFormat = "http://api.openweathermap.org/data/2.5/forecast?q=%s,%s&APPID=%s"
 
+  def weatherUrl(city: String, country: String) = s"http://api.openweathermap.org/data/2.5/weather?q=${city},${country}&APPID=${apiKey}"
+
+  implicit val ec = context.dispatcher
   implicit val materializer = ActorMaterializer(ActorMaterializerSettings(context.system))
-
-  val http = Http(context.system)
 
   def receive = {
     case ReactorRequest(reactorId, data, passThrough) =>
@@ -34,24 +30,19 @@ class WeatherReactor extends Actor with ActorLogging {
 
   private def requestWeather(reactorId: String, params: List[String], passThrough: String): Unit = {
     val weatherUri = (params: @unchecked) match {
-      case city :: Nil => String.format(weatherUrlFormat, city, defaultCountryCode, apiKey)
-      case city :: country :: Nil => String.format(weatherUrlFormat, city, country, apiKey)
+      case city :: Nil => weatherUrl(city, defaultCountryCode)
+      case city :: country :: Nil => weatherUrl(city, country)
     }
 
-    // TODO: response needs to be distilled - currently there's too much information to be human readable
-    http.singleRequest(HttpRequest(uri = weatherUri))
-      .flatMap(response => response.entity.dataBytes.runFold(ByteString(""))(_ ++ _))
-      .map(bs => ReactorResponse(reactorId, bs.decodeString(UTF_8), passThrough))
-      .pipeTo(sender())
-  }
-}
+    val sender = context.sender()
 
-object WeatherReactor {
-  def props = Props[WeatherReactor]
-
-  def start() : Unit = {
-    val system = ActorSystem("weather-reactor-system", load("weather-reactor-system.conf"))
-    val registry = system.actorSelection("akka.tcp://distractor@127.0.0.1:2552/user/reactor-registry")
-    registry ! Register("weather", system.actorOf(props))
+    ahcWsClient
+      .url(weatherUri)
+      .withHeaders("Accept" -> "application/json")
+      .get()
+      .onSuccess {
+        case result =>
+          sender forward ReactorResponse(reactorId, result.body, passThrough)
+      }
   }
 }

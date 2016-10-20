@@ -8,7 +8,6 @@ val akkaVersion = "2.4.10"
 libraryDependencies ++= Seq(
   // Actor System
   "com.typesafe.akka" %% "akka-actor" % akkaVersion,
-  "com.typesafe.akka" %% "akka-remote" % akkaVersion,
 
   // Goodies
   "ch.qos.logback" % "logback-classic" % logbackVersion,

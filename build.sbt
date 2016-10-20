@@ -20,7 +20,7 @@ lazy val distractor = project.in(file("."))
     distractor_transport_slack_http,
 
     distractor_reactor_system,
-    distractor_reactor_docker,
+    // distractor_reactor_docker,
     distractor_reactor_jira,
     distractor_reactor_foaas,
     distractor_reactor_spring_boot_actuator,
@@ -48,7 +48,7 @@ lazy val distractor_core = Project(id = "distractor-core", base = file("distract
     distractor_transport_http_rest,
     distractor_transport_slack_http,
     distractor_reactor_system,
-    distractor_reactor_docker,
+    // distractor_reactor_docker,
     distractor_reactor_jira,
     distractor_reactor_foaas,
     distractor_reactor_spring_boot_actuator,
@@ -88,11 +88,10 @@ lazy val distractor_reactor_foaas = Project(id = "distractor-reactor-foaas", bas
     distractor_test_common)
 lazy val distractor_reactor_weather = Project(id = "distractor-reactor-weather", base = file("distractor-reactor-weather"))
   .settings(libraryDependencies += "com.typesafe.akka" %% "akka-actor" % akkaVersion)
-  .settings(libraryDependencies += "com.typesafe.akka" %% "akka-http-experimental" % akkaVersion)
   .settings(commonSettings: _*)
   .dependsOn(
-      distractor_api,
-      distractor_test_common)
+    distractor_api,
+    distractor_test_common)
 
 // transports
 lazy val distractor_transport_telnet = Project(id = "distractor-transport-telnet", base = file("distractor-transport-telnet"))

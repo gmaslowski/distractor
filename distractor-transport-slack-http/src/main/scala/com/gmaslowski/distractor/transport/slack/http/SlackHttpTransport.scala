@@ -1,6 +1,6 @@
 package com.gmaslowski.distractor.transport.slack.http
 
-import akka.actor.{Actor, ActorLogging, Props}
+import akka.actor.{Actor, ActorLogging, ActorRef, Props}
 import akka.http.scaladsl.Http
 import akka.http.scaladsl.model.{ContentType, HttpEntity, HttpResponse, MediaTypes}
 import akka.http.scaladsl.server.Directives._
@@ -15,7 +15,7 @@ import spray.json.JsonParser
 object SlackHttpTransport {
   val HTTP_PORT: Int = 8081
 
-  def props = Props[SlackHttpTransport]
+  def props(transportRegistry: ActorRef) = Props(classOf[SlackHttpTransport], transportRegistry)
 
   def makeDistractorCommand(slackCommand: String): String = {
     val command = slackCommand.split("&")
@@ -33,7 +33,7 @@ object SlackHttpTransport {
       .apply("response_url").getBytes))
 }
 
-class SlackHttpTransport extends Actor with ActorLogging {
+class SlackHttpTransport(transportRegistry: ActorRef) extends Actor with ActorLogging {
 
   implicit val materializer = ActorMaterializer()
   implicit val ec = context.dispatcher
@@ -45,6 +45,7 @@ class SlackHttpTransport extends Actor with ActorLogging {
         val command = makeDistractorCommand(slackMessageBody)
         val responseUrl = makeResponseUrl(slackMessageBody)
 
+        log.info(s"$command, $responseUrl")
         context.actorSelection("akka://distractor/user/distractor/request-handler") ! DistractorRequest(command, responseUrl)
 
         HttpResponse(200, entity = HttpEntity(ContentType(MediaTypes.`application/json`),s"""{\"response_type\": \"in_channel\"}"""))
@@ -58,12 +59,12 @@ class SlackHttpTransport extends Actor with ActorLogging {
   Http(context.system).bindAndHandle(route, "0.0.0.0", HTTP_PORT)
 
   override def preStart() {
-    // todo: fix that; should be provided via props, and not on preStart
-    context.actorSelection("akka://distractor/user/distractor/transport-registry") ! Register("slack-http", self)
+    transportRegistry ! Register("slack-http", self)
   }
 
   override def receive: Receive = {
     case ReactorResponse(reactorId, message, passThrough) =>
+      log.info(s"$reactorId, $message, $passThrough")
       client
         .url(passThrough)
         .withHeaders("Accept" -> "application/json")

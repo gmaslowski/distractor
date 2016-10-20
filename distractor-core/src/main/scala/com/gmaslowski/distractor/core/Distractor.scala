@@ -10,7 +10,6 @@ import com.gmaslowski.distractor.core.api.DistractorApi.Register
 import com.gmaslowski.distractor.core.api.DistractorRequestHandler
 import com.gmaslowski.distractor.core.reactor.ReactorRegistry
 import com.gmaslowski.distractor.core.transport.TransportRegistry
-import com.gmaslowski.distractor.reactor.docker.DockerReactor
 import com.gmaslowski.distractor.reactor.foaas.FoaasReactor
 import com.gmaslowski.distractor.reactor.jira.JiraReactor
 import com.gmaslowski.distractor.reactor.spring.boot.actuator.SpringBootActuatorReactor
@@ -81,17 +80,16 @@ class Distractor extends Actor with ActorLogging {
     if ("ON" equals systemReactor) {
       reactorRegistry ! Register("system", context.actorOf(SystemReactor.props))
     }
-    reactorRegistry ! Register("jira", context.actorOf(JiraReactor.props(ahcWsClient)))
-    reactorRegistry ! Register("springboot", context.actorOf(SpringBootActuatorReactor.props(ahcWsClient, mapper)))
-    reactorRegistry ! Register("foaas", context.actorOf(FoaasReactor.props(ahcWsClient)))
-
-    DockerReactor.startDockerReactor()
-    WeatherReactor.start()
+    reactorRegistry ! Register("jira", context.actorOf(JiraReactor.props(ahcWsClient), "jira"))
+    reactorRegistry ! Register("springboot", context.actorOf(SpringBootActuatorReactor.props(ahcWsClient, mapper), "springboot"))
+    reactorRegistry ! Register("foaas", context.actorOf(FoaasReactor.props(ahcWsClient), "foaas"))
+    // reactorRegistry ! Register("docker", context.actorOf(DockerReactor.props, "docker"))
+    reactorRegistry ! Register("weather", context.actorOf(WeatherReactor.props(ahcWsClient), "weather"))
 
     // fixme: transports should be distractor-kernel independent
-    context.actorOf(TelnetTransport.props, "telnet")
-    context.actorOf(HttpRestTransport.props, "http-rest")
-    context.actorOf(SlackHttpTransport.props, "slack-http")
+    context.actorOf(TelnetTransport.props(transportRegistry), "telnet")
+    context.actorOf(HttpRestTransport.props(transportRegistry), "http-rest")
+    context.actorOf(SlackHttpTransport.props(transportRegistry), "slack-http")
   }
 
   def createAndRegisterInfoReactor: Unit = {

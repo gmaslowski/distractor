@@ -1,6 +1,6 @@
 package com.gmaslowski.distractor.transport.http.rest
 
-import akka.actor.{Actor, ActorLogging, Props}
+import akka.actor.{Actor, ActorLogging, ActorRef, Props}
 import akka.http.scaladsl.Http
 import akka.http.scaladsl.marshallers.sprayjson.SprayJsonSupport
 import akka.http.scaladsl.marshalling.ToResponseMarshallable
@@ -21,13 +21,13 @@ object HttpRestMarshallers extends DefaultJsonProtocol with SprayJsonSupport {
 object HttpRestTransport {
   val HTTP_PORT: Int = 8080
 
-  def props = Props[HttpRestTransport]
+  def props(transportRegistry: ActorRef) = Props(classOf[HttpRestTransport], transportRegistry)
 
   final case class RestCommand(message: String)
 
 }
 
-class HttpRestTransport extends Actor with ActorLogging {
+class HttpRestTransport(transportRegistry: ActorRef) extends Actor with ActorLogging {
 
   import HttpRestMarshallers._
 
@@ -52,8 +52,7 @@ class HttpRestTransport extends Actor with ActorLogging {
   Http(context.system).bindAndHandle(route, "0.0.0.0", HTTP_PORT)
 
   override def preStart() {
-    // todo: fix that; should be provided via props, and not on preStart
-    context.actorSelection("akka://distractor/user/distractor/transport-registry") ! Register("http-rest", self)
+    transportRegistry ! Register("http-rest", self)
   }
 
   override def receive: Receive = {

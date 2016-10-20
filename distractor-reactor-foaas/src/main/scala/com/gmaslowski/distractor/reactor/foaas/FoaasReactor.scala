@@ -18,13 +18,18 @@ class FoaasReactor(val ahcWsClient: AhcWSClient) extends Actor with ActorLogging
 
       val sender = context.sender()
 
-      ahcWsClient
+      val f = ahcWsClient
         .url(s"https://www.foaas.com/${data}")
         .withHeaders("Accept" -> "application/json")
         .get()
-        .onSuccess {
-          case result =>
-            sender forward ReactorResponse(reactorId, result.body)
-        }
+
+      f onSuccess {
+        case result =>
+          sender forward ReactorResponse(reactorId, result.body, passThrough)
+      }
+
+      f onFailure {
+        case t => log.error(t, "err")
+      }
   }
 }

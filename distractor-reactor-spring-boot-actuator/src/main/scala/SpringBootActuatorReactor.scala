@@ -38,7 +38,7 @@ class SpringBootActuatorReactor(val client: AhcWSClient, val mapper: ObjectMappe
             .get()
             .onSuccess {
               case result =>
-                sender forward ReactorResponse(reactorId, result.body)
+                sender forward ReactorResponse(reactorId, result.body, passThrough)
             }
       }
   }

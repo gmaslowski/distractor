@@ -5,7 +5,7 @@ import java.net.InetSocketAddress
 import java.nio.charset.Charset
 import java.util.concurrent.TimeUnit.SECONDS
 
-import akka.actor.{Actor, ActorLogging, Props}
+import akka.actor.{Actor, ActorLogging, ActorRef, Props}
 import com.gmaslowski.distractor.core.api.DistractorApi.Register
 import com.gmaslowski.distractor.core.reactor.api.ReactorApi.ReactorResponse
 import com.gmaslowski.distractor.transport.telnet.TelnetTransport.TELNET_PORT
@@ -26,10 +26,10 @@ object TelnetTransport {
   val TELNET_PORT: Int = 8111
   val ONE_SECOND: FiniteDuration = FiniteDuration.apply(1, SECONDS)
 
-  def props = Props[TelnetTransport]
+  def props(transportRegistry: ActorRef) = Props(classOf[TelnetTransport], transportRegistry)
 }
 
-class TelnetTransport extends Actor with ActorLogging {
+class TelnetTransport(transportRegistry: ActorRef) extends Actor with ActorLogging {
 
   var acceptor: NioSocketAcceptor = new NioSocketAcceptor
 
@@ -42,8 +42,7 @@ class TelnetTransport extends Actor with ActorLogging {
 
     configureSession(acceptor.getSessionConfig)
 
-    // fixme: think on API and how to communicate reactors with the kernel
-    context.actorSelection("akka://distractor/user/distractor/transport-registry") ! Register("telnet", self)
+    transportRegistry ! Register("telnet", self)
     acceptor.setHandler(new TelnetHandler(log, context.actorSelection("akka://distractor/user/distractor/request-handler"), self))
     acceptor.setReuseAddress(true)
 
