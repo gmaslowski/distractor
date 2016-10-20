@@ -25,6 +25,12 @@ with coverage
 ./activator run
 ```
 
+### create artifact and run 
+```bash
+./activator "project distractor-core" clean assembly
+java -jar distractor-core/target/scala-2.11/distractor-assembly-0.1-SNAPSHOT.jar
+```
+
 ## architecture overview
 ### actor system
 > Note that this architecture overview may not be up to date. Code reference should be the internal actor system indicator
