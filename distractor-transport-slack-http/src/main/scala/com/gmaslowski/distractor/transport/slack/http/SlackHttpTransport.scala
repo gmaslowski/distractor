@@ -45,7 +45,6 @@ class SlackHttpTransport(transportRegistry: ActorRef) extends Actor with ActorLo
         val command = makeDistractorCommand(slackMessageBody)
         val responseUrl = makeResponseUrl(slackMessageBody)
 
-        log.info(s"$command, $responseUrl")
         context.actorSelection("akka://distractor/user/distractor/request-handler") ! DistractorRequest(command, responseUrl)
 
         HttpResponse(200, entity = HttpEntity(ContentType(MediaTypes.`application/json`),s"""{\"response_type\": \"in_channel\"}"""))
@@ -64,7 +63,6 @@ class SlackHttpTransport(transportRegistry: ActorRef) extends Actor with ActorLo
 
   override def receive: Receive = {
     case ReactorResponse(reactorId, message, passThrough) =>
-      log.info(s"$reactorId, $message, $passThrough")
       client
         .url(passThrough)
         .withHeaders("Accept" -> "application/json")
