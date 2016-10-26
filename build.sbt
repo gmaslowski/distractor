@@ -52,7 +52,8 @@ lazy val distractor_core = Project(id = "distractor-core", base = file("distract
     distractor_reactor_jira,
     distractor_reactor_foaas,
     distractor_reactor_spring_boot_actuator,
-    distractor_reactor_weather)
+    distractor_reactor_weather,
+    distractor_remote_registration)
   .settings(mainClass in(Compile, run) := Some("com.gmaslowski.distractor.core.DistractorBootstrap"))
 
 // ui
@@ -92,6 +93,12 @@ lazy val distractor_reactor_weather = Project(id = "distractor-reactor-weather",
   .dependsOn(
     distractor_api,
     distractor_test_common)
+lazy val distractor_remote_registration = Project(id = "distrator-remote-registration", base = file("distrator-remote-registration"))
+  .settings(libraryDependencies += "com.typesafe.akka" %% "akka-actor" % akkaVersion)
+  .settings(libraryDependencies += "com.typesafe.akka" %% "akka-testkit" % akkaVersion % "test")
+  .settings(libraryDependencies += "org.scalatest" %% "scalatest" % "2.2.6" % "test")
+  .settings(commonSettings: _*)
+  .dependsOn(distractor_api)
 
 // transports
 lazy val distractor_transport_telnet = Project(id = "distractor-transport-telnet", base = file("distractor-transport-telnet"))
