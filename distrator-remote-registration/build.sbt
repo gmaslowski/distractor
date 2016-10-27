@@ -1,0 +1,1 @@
+name := """distrator-remote-registration"""

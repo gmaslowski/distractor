@@ -15,6 +15,8 @@ import com.gmaslowski.distractor.reactor.jira.JiraReactor
 import com.gmaslowski.distractor.reactor.spring.boot.actuator.SpringBootActuatorReactor
 import com.gmaslowski.distractor.reactor.system.SystemReactor
 import com.gmaslowski.distractor.reactor.weather.WeatherReactor
+import com.gmaslowski.distractor.remote.RemoteRegistrationServer
+import com.gmaslowski.distractor.remote.RemoteRegistrationServer.UseReactorRegistry
 import com.gmaslowski.distractor.transport.http.rest.HttpRestTransport
 import com.gmaslowski.distractor.transport.info.InfoReactor
 import com.gmaslowski.distractor.transport.info.InfoReactor.Information
@@ -90,6 +92,8 @@ class Distractor extends Actor with ActorLogging {
     context.actorOf(TelnetTransport.props(transportRegistry), "telnet")
     context.actorOf(HttpRestTransport.props(transportRegistry), "http-rest")
     context.actorOf(SlackHttpTransport.props(transportRegistry), "slack-http")
+
+    startRemoteRegistrationServer()
   }
 
   def createAndRegisterInfoReactor: Unit = {
@@ -101,5 +105,10 @@ class Distractor extends Actor with ActorLogging {
     )
 
     reactorRegistry ! Register("info", context.actorOf(InfoReactor.props(information, transportRegistry, reactorRegistry)))
+  }
+
+  def startRemoteRegistrationServer(): Unit = {
+    val serverName = RemoteRegistrationServer.getClass.getSimpleName
+    context.actorOf(RemoteRegistrationServer.props, serverName) ! UseReactorRegistry(reactorRegistry)
   }
 }
