@@ -24,7 +24,7 @@ class DockerReactor(client: DockerClient) extends Actor with ActorLogging {
 
   override def receive = {
 
-    case ReactorRequest(reactorId, data, passThrough) =>
+    case ReactorRequest(reactorId, data) =>
       val response = data match {
 
         case listImagesCommand(images) =>

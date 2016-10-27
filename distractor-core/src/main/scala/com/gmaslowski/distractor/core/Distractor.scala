@@ -91,7 +91,7 @@ class Distractor extends Actor with ActorLogging {
     // fixme: transports should be distractor-kernel independent
     context.actorOf(TelnetTransport.props(transportRegistry), "telnet")
     context.actorOf(HttpRestTransport.props(transportRegistry), "http-rest")
-    context.actorOf(SlackHttpTransport.props(transportRegistry), "slack-http")
+    context.actorOf(SlackHttpTransport.props(transportRegistry, ahcWsClient), "slack-http")
 
     startRemoteRegistrationServer()
   }

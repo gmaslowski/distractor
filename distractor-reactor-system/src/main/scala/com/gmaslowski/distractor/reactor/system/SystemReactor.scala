@@ -19,6 +19,6 @@ class SystemReactor extends Actor with ActorLogging {
       // fixme: better to do it in a future/actor
       val shellCommandResponse = shellCommand !!
 
-      context.sender() forward ReactorResponse(reactorRequest.reactorId, shellCommandResponse, reactorRequest.passThrough)
+      context.sender() forward ReactorResponse(reactorRequest.reactorId, shellCommandResponse)
   }
 }

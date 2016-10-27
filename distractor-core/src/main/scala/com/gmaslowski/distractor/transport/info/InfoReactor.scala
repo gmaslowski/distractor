@@ -60,7 +60,7 @@ class InfoReactor(val information: Information,
               x => responseMap += (x.asInstanceOf[RegisteredActors].registryName -> x.asInstanceOf[RegisteredActors].list)
             )
 
-            requestor forward ReactorResponse(reactorRequest.reactorId, mapper.writeValueAsString(responseMap), reactorRequest.passThrough)
+            requestor forward ReactorResponse(reactorRequest.reactorId, mapper.writeValueAsString(responseMap))
           case Failure(e) =>
             requestor forward ReactorResponse(reactorRequest.reactorId, mapper.writeValueAsString(Map("error" -> e.getMessage)))
         }

@@ -14,7 +14,7 @@ class FoaasReactor(val ahcWsClient: AhcWSClient) extends Actor with ActorLogging
   implicit val ec = context.dispatcher
 
   override def receive = {
-    case ReactorRequest(reactorId, data, passThrough) =>
+    case ReactorRequest(reactorId, data) =>
 
       val sender = context.sender()
 
@@ -25,7 +25,7 @@ class FoaasReactor(val ahcWsClient: AhcWSClient) extends Actor with ActorLogging
 
       f onSuccess {
         case result =>
-          sender forward ReactorResponse(reactorId, result.body, passThrough)
+          sender forward ReactorResponse(reactorId, result.body)
       }
 
       f onFailure {

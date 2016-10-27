@@ -18,9 +18,10 @@ object RemoteReactorProxy {
 
   private[remote] type CorrelationId = UUID
 
-  private case class CorrelationEntry(respondTo: ActorRef, passThrough: String)
+  private case class CorrelationEntry(respondTo: ActorRef)
 
   private case class TimedOut(id: CorrelationId)
+
 }
 
 class RemoteReactorProxy(reactorRegistry: ActorRef) extends Actor with ActorLogging {
@@ -50,9 +51,9 @@ class RemoteReactorProxy(reactorRegistry: ActorRef) extends Actor with ActorLogg
   }
 
   def registeredReactor(connection: ActorRef): Receive = {
-    case ReactorRequest(reactorId, data, passThrough) =>
+    case ReactorRequest(reactorId, data) =>
       val id = correlationId
-      requestResponseCorrelationMap += (id -> CorrelationEntry(sender(), passThrough))
+      requestResponseCorrelationMap += (id -> CorrelationEntry(sender()))
       connection ! Write(createMessage(data, id))
       context.system.scheduler.scheduleOnce(timeout, self, TimedOut(id))
 
@@ -63,9 +64,9 @@ class RemoteReactorProxy(reactorRegistry: ActorRef) extends Actor with ActorLogg
           val id: CorrelationId = UUID.fromString(correlationId)
           val maybeEntry = requestResponseCorrelationMap.get(id)
           maybeEntry.foreach(entry => {
-            val CorrelationEntry(respondTo, passThrough) = entry
+            val CorrelationEntry(respondTo) = entry
             requestResponseCorrelationMap -= id
-            respondTo ! ReactorResponse(reactorName, receivedData, passThrough)
+            respondTo ! ReactorResponse(reactorName, receivedData)
           })
           if (maybeEntry.isEmpty) {
             log.debug(s"Got a message with nonexistent correlationId: $response")
@@ -81,9 +82,9 @@ class RemoteReactorProxy(reactorRegistry: ActorRef) extends Actor with ActorLogg
     case TimedOut(id) =>
       val maybeEntry = requestResponseCorrelationMap.get(id)
       maybeEntry.foreach(entry => {
-        val CorrelationEntry(respondTo, passThrough) = entry
+        val CorrelationEntry(respondTo) = entry
         requestResponseCorrelationMap -= id
-        respondTo ! ReactorResponse(reactorName, timeoutMessage, passThrough)
+        respondTo ! ReactorResponse(reactorName, timeoutMessage)
       })
   }
 

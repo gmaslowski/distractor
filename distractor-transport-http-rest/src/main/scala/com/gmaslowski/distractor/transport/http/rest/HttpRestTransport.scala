@@ -44,7 +44,7 @@ class HttpRestTransport(transportRegistry: ActorRef) extends Actor with ActorLog
           10 seconds)
 
         future.map[ToResponseMarshallable] {
-          case ReactorResponse(reactorId, message, passThrough) => message
+          case ReactorResponse(reactorId, message) => message
         }
       }
     }
@@ -56,7 +56,7 @@ class HttpRestTransport(transportRegistry: ActorRef) extends Actor with ActorLog
   }
 
   override def receive: Receive = {
-    case ReactorResponse(reactorId, message, passThrough) =>
+    case ReactorResponse(reactorId, message) =>
   }
 }
 

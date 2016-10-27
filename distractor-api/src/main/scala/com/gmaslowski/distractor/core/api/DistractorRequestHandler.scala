@@ -22,8 +22,8 @@ object DistractorRequestHandler {
 class DistractorRequestHandler(val reactorRegistry: ActorRef) extends Actor with ActorLogging {
   override def receive = {
 
-    case DistractorRequest(command, passThrough) =>
+    case DistractorRequest(command) =>
       val (reactorId: String, data: String) = extractReactorAndCommandFrom(command)
-      reactorRegistry forward ReactorRequest(reactorId, data, passThrough)
+      reactorRegistry forward ReactorRequest(reactorId, data)
   }
 }

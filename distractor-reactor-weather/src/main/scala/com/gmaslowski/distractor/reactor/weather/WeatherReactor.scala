@@ -20,15 +20,15 @@ class WeatherReactor(val ahcWsClient: AhcWSClient) extends Actor with ActorLoggi
   implicit val materializer = ActorMaterializer(ActorMaterializerSettings(context.system))
 
   def receive = {
-    case ReactorRequest(reactorId, data, passThrough) =>
+    case ReactorRequest(reactorId, data) =>
       val params = data.split("\\s+")
       params.length match {
-        case 1 | 2 => requestWeather(reactorId, params.toList, passThrough)
-        case _ => sender ! ReactorResponse(reactorId, "{\"message\":\"Provide a [cityName] or [cityName countryCode] pair.\"}", passThrough)
+        case 1 | 2 => requestWeather(reactorId, params.toList)
+        case _ => sender ! ReactorResponse(reactorId, "{\"message\":\"Provide a [cityName] or [cityName countryCode] pair.\"}")
       }
   }
 
-  private def requestWeather(reactorId: String, params: List[String], passThrough: String): Unit = {
+  private def requestWeather(reactorId: String, params: List[String]): Unit = {
     val weatherUri = (params: @unchecked) match {
       case city :: Nil => weatherUrl(city, defaultCountryCode)
       case city :: country :: Nil => weatherUrl(city, country)
@@ -42,7 +42,7 @@ class WeatherReactor(val ahcWsClient: AhcWSClient) extends Actor with ActorLoggi
       .get()
       .onSuccess {
         case result =>
-          sender forward ReactorResponse(reactorId, result.body, passThrough)
+          sender forward ReactorResponse(reactorId, result.body)
       }
   }
 }
