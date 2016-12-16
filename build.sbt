@@ -1,16 +1,21 @@
-import sbt.Keys._
+import sbt.Keys.{libraryDependencies, _}
 import sbt._
 
-lazy val akkaVersion = "2.4.10"
+lazy val akkaVersion = "2.4.14"
 
 lazy val commonSettings = Seq(
   organization := "com.gmaslowski",
   version := "0.1-SNAPSHOT",
-  scalaVersion := "2.11.8"
+  scalaVersion := "2.12.0",
+  libraryDependencies := Seq(
+    "org.scalatest" %% "scalatest" % "3.0.1",
+    "com.typesafe.akka" %% "akka-testkit" % "2.4.14",
+    "org.mockito" % "mockito-core" % "1.10.19"
+  )
 )
 
 lazy val distractor = project.in(file("."))
-  .settings(scalaVersion := "2.11.8")
+  .settings(scalaVersion := "2.12.0")
   .aggregate(
     distractor_api,
     distractor_test_common,
@@ -31,9 +36,11 @@ lazy val distractor = project.in(file("."))
 
 // commons
 lazy val distractor_api = Project(id = "distractor-api", base = file("distractor-api"))
+  .settings(name :="""distractor-api""")
   .settings(libraryDependencies += "com.typesafe.akka" %% "akka-actor" % akkaVersion)
   .settings(commonSettings: _*)
 lazy val distractor_test_common = Project(id = "distractor-test-common", base = file("distractor-test-common"))
+  .settings(name :="""distractor-test-common""")
   .settings(libraryDependencies += "com.typesafe.akka" %% "akka-actor" % akkaVersion)
   .settings(commonSettings: _*)
 
@@ -58,58 +65,73 @@ lazy val distractor_core = Project(id = "distractor-core", base = file("distract
 
 // ui
 lazy val distractor_dashboard = Project(id = "distractor-dashboard", base = file("distractor-dashboard"))
+  .settings(name :="""distractor-dashboard""")
   .settings(commonSettings: _*)
 
 // reactors
 lazy val distractor_reactor_system = Project(id = "distractor-reactor-system", base = file("distractor-reactor-system"))
+  .settings(name :="""distractor-reactor-system""")
   .settings(libraryDependencies += "com.typesafe.akka" %% "akka-actor" % akkaVersion)
   .settings(commonSettings: _*)
   .dependsOn(distractor_api)
 lazy val distractor_reactor_spring_boot_actuator = Project(id = "distractor-reactor-spring-boot-actuator", base = file("distractor-reactor-spring-boot-actuator"))
+  .settings(name :="""distractor-reactor-spring-boot-actuator""")
   .settings(libraryDependencies += "com.typesafe.akka" %% "akka-actor" % akkaVersion)
   .settings(commonSettings: _*)
   .dependsOn(distractor_api)
 lazy val distractor_reactor_jira = Project(id = "distractor-reactor-jira", base = file("distractor-reactor-jira"))
+  .settings(name :="""distractor-reactor-jira""")
   .settings(libraryDependencies += "com.typesafe.akka" %% "akka-actor" % akkaVersion)
   .settings(commonSettings: _*)
   .dependsOn(
     distractor_api,
     distractor_test_common)
 lazy val distractor_reactor_docker = Project(id = "distractor-reactor-docker", base = file("distractor-reactor-docker"))
+  .settings(name :="""distractor-reactor-docker""")
   .settings(libraryDependencies += "com.typesafe.akka" %% "akka-actor" % akkaVersion)
   .settings(commonSettings: _*)
   .dependsOn(
     distractor_api,
     distractor_test_common)
+
 lazy val distractor_reactor_foaas = Project(id = "distractor-reactor-foaas", base = file("distractor-reactor-foaas"))
+  .settings(name :="""distractor-reactor-foaas""")
   .settings(libraryDependencies += "com.typesafe.akka" %% "akka-actor" % akkaVersion)
   .settings(commonSettings: _*)
   .dependsOn(
     distractor_api,
     distractor_test_common)
+
 lazy val distractor_reactor_weather = Project(id = "distractor-reactor-weather", base = file("distractor-reactor-weather"))
+  .settings(name :="""distractor-reactor-weather""")
   .settings(libraryDependencies += "com.typesafe.akka" %% "akka-actor" % akkaVersion)
   .settings(commonSettings: _*)
   .dependsOn(
     distractor_api,
     distractor_test_common)
+
 lazy val distractor_remote_registration = Project(id = "distrator-remote-registration", base = file("distrator-remote-registration"))
+  .settings(name :="""distrator-remote-registration""")
   .settings(libraryDependencies += "com.typesafe.akka" %% "akka-actor" % akkaVersion)
   .settings(libraryDependencies += "com.typesafe.akka" %% "akka-testkit" % akkaVersion % "test")
-  .settings(libraryDependencies += "org.scalatest" %% "scalatest" % "2.2.6" % "test")
+  .settings(libraryDependencies += "org.scalatest" %% "scalatest" % "3.0.1" % "test")
   .settings(commonSettings: _*)
   .dependsOn(distractor_api)
 
 // transports
 lazy val distractor_transport_telnet = Project(id = "distractor-transport-telnet", base = file("distractor-transport-telnet"))
+  .settings(name :="""distractor-transport-telnet""")
   .settings(libraryDependencies += "com.typesafe.akka" %% "akka-actor" % akkaVersion)
+  .settings(libraryDependencies += "org.apache.mina" % "mina-core" % "2.0.16")
   .settings(commonSettings: _*)
   .dependsOn(distractor_api, distractor_test_common)
 lazy val distractor_transport_http_rest = Project(id = "distractor-transport-http-rest", base = file("distractor-transport-http-rest"))
+  .settings(name :="""distractor-transport-http-rest""")
   .settings(libraryDependencies += "com.typesafe.akka" %% "akka-actor" % akkaVersion)
   .settings(commonSettings: _*)
   .dependsOn(distractor_api, distractor_test_common)
 lazy val distractor_transport_slack_http = Project(id = "distractor-transport-slack-http", base = file("distractor-transport-slack-http"))
+  .settings(name :="""distractor-transport-slack-http""")
   .settings(libraryDependencies += "com.typesafe.akka" %% "akka-actor" % akkaVersion)
   .settings(commonSettings: _*)
   .dependsOn(distractor_api, distractor_test_common)

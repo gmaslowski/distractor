@@ -1,9 +1,9 @@
 name := """distractor"""
 
-val scalatestVersion = "2.2.6"
+val scalatestVersion = "3.0.1"
 val mockitoVersion = "1.10.19"
 val logbackVersion = "1.1.3"
-val akkaVersion = "2.4.10"
+val akkaVersion = "2.4.14"
 
 libraryDependencies ++= Seq(
   // Actor System
@@ -12,7 +12,7 @@ libraryDependencies ++= Seq(
   // Goodies
   "ch.qos.logback" % "logback-classic" % logbackVersion,
   "com.typesafe.akka" %% "akka-slf4j" % akkaVersion,
-  "com.fasterxml.jackson.module" %% "jackson-module-scala" % "2.8.2",
+  "com.fasterxml.jackson.module" %% "jackson-module-scala" % "2.8.4",
 
   // Testing Frameworks
   "com.typesafe.akka" %% "akka-testkit" % akkaVersion % "test",

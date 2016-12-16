@@ -1,1 +1,0 @@
-name := """distrator-remote-registration"""
