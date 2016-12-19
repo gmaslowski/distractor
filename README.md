@@ -37,4 +37,5 @@ java -jar distractor-core/target/scala-2.11/distractor-assembly-0.1-SNAPSHOT.jar
 
 ![Actor System Overview](http://yuml.me/diagram/scruffy/class/[note:Distractor ActorSystem {bg:wheat}],[Distractor {bg:lightskyblue}]++-1>[ReactorRegistry {bg:lightskyblue}],[Distractor {bg:lightskyblue}]++-1>[DistractorRequestHandler {bg:lightskyblue}],[Distractor {bg:lightskyblue}]++-1>[TransportRegistry {bg:lightskyblue}],[TransportRegistry {bg:lightskyblue}]<>-0..*>[*Transport {bg:lightsalmon}],[ReactorRegistry {bg:lightskyblue}]<>-0..*>[*Reactor {bg:lightsalmon}])
 
-
+## short development movie
+https://www.youtube.com/watch?v=8r2d7Ouwn3U
