@@ -2,7 +2,7 @@ distractor
 ==========
 
 [![Join the chat at https://gitter.im/gmaslowski/distractor](https://badges.gitter.im/Join%20Chat.svg)](https://gitter.im/gmaslowski/distractor?utm_source=badge&utm_medium=badge&utm_campaign=pr-badge&utm_content=badge)
-[![Build Status](https://snap-ci.com/gmaslowski/distractor/branch/develop/build_image)](https://snap-ci.com/gmaslowski/distractor/branch/develop)
+[![Build Status](https://travis-ci.org/gmaslowski/distractor.svg?branch=develop)](https://travis-ci.org/gmaslowski/distractor)
 [![codecov.io](http://codecov.io/github/gmaslowski/distractor/coverage.svg?branch=develop)](http://codecov.io/github/gmaslowski/distractor?branch=develop)
 
 ## project information
