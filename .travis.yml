@@ -6,3 +6,6 @@ jdk:
 
 script:
   - sbt ++$TRAVIS_SCALA_VERSION test
+  - sbt coverageReport
+  - sbt coverageAggregate
+  - pip install codecov && codecov --token=${CODECOV_KEY}
